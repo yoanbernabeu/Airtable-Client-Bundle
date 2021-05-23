@@ -1,0 +1,24 @@
+{
+    "name": "yoanbernabeu/airtable-client-bundle",
+    "description": "Simple Client for Airtable API",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yoan Bernabeu",
+            "email": "yoan.bernabeu@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4.3",
+        "symfony/http-client": "5.2.*",
+        "symfony/config": "^4.0",
+        "symfony/dependency-injection": "^4.0",
+        "symfony/http-kernel": "^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yoanbernabeu\\AirtableClientBundle\\": "src/"
+        }
+    }
+}
