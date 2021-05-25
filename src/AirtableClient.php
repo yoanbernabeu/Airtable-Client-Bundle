@@ -7,6 +7,9 @@ use Yoanbernabeu\AirtableClientBundle\Services\JsonToArray;
 
 class AirtableClient
 {
+    private $key;
+    private $id;
+    
     public function __construct($key, $id)
     {
         $this->key = $key;
