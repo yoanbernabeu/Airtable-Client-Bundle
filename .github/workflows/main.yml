@@ -1,0 +1,18 @@
+# .github/workflows/static-code-analysis.yml
+name: Static code analysis
+
+on: [push]
+
+jobs:
+  static-code-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: PHPStan
+        uses: docker://jakzal/phpqa:php7.4-alpine
+        with:
+          args: phpstan analyze src/ -l 1
+      - name: PHP-CS-Fixer
+        uses: docker://jakzal/phpqa:php7.4-alpine
+        with:
+          args: phpcs -v --standard=PSR2 ./src
