@@ -42,11 +42,12 @@ use Yoanbernabeu\AirtableClientBundle\AirtableClient;
 
 class foo
 {
-    public function bar()
+    public function bar(AirtableClient $airtableClient)
     {
         // ...
         $airtableClient->findAll('tableName', 'viewName');
         $airtableClient->findOneById('tableName', 'id');
+        $airtableClient->findBy('tableName', 'fieldName', 'value');
         // ...
     }
 

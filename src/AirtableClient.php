@@ -33,7 +33,7 @@ class AirtableClient
     
     /**
      * findBy
-     * 
+     *
      * Allows you to filter on a field in the table
      *
      * @param  mixed $table Table name
