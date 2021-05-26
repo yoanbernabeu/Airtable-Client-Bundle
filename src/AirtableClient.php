@@ -3,7 +3,6 @@
 namespace Yoanbernabeu\AirtableClientBundle;
 
 use Symfony\Component\HttpClient\HttpClient;
-use Yoanbernabeu\AirtableClientBundle\Services\JsonToArray;
 
 class AirtableClient
 {
@@ -29,7 +28,7 @@ class AirtableClient
             'auth_bearer' => $this->key,
         ]);
 
-        return $convert->convert($response->getContent())['records'];
+        return $response->toArray()['records'];
     }
 
     public function findOneById(string $table, string $id)
@@ -41,6 +40,6 @@ class AirtableClient
             'auth_bearer' => $this->key,
         ]);
 
-        return $convert->convert($response->getContent());
+        return $response->toArray();
     }
 }
