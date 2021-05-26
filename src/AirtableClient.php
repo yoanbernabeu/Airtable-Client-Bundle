@@ -18,7 +18,6 @@ class AirtableClient
     public function findAll(string $table, ?string $view = null)
     {
         $client = HttpClient::create();
-        $convert = new JsonToArray();
 
         if ($view) {
             $view = '?view=' . $view;
@@ -34,7 +33,6 @@ class AirtableClient
     public function findOneById(string $table, string $id)
     {
         $client = HttpClient::create();
-        $convert = new JsonToArray();
 
         $response = $client->request('GET', 'https://api.airtable.com/v0/'. $this->id .'/'. $table . '/' . $id, [
             'auth_bearer' => $this->key,
