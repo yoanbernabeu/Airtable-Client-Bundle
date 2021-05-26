@@ -32,7 +32,7 @@ class AirtableClient
         return $convert->convert($response->getContent())['records'];
     }
 
-    public function findById(string $table, string $id)
+    public function findOneById(string $table, string $id)
     {
         $client = HttpClient::create();
         $convert = new JsonToArray();

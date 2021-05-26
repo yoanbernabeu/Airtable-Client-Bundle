@@ -46,7 +46,7 @@ class foo
     {
         // ...
         $airtableClient->findAll('tableName', 'viewName');
-        $airtableClient->findById('tableName', 'id');
+        $airtableClient->findOneById('tableName', 'id');
         // ...
     }
 
