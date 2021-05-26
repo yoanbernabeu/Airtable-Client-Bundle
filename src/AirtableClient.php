@@ -15,7 +15,7 @@ class AirtableClient
         $this->id = $id;
     }
 
-    public function findAll(string $table, ?string $view = null)
+    public function findAll(string $table, ?string $view = null): array
     {
         $client = HttpClient::create();
 
@@ -30,7 +30,31 @@ class AirtableClient
         return $response->toArray()['records'];
     }
 
-    public function findOneById(string $table, string $id)
+    
+    /**
+     * findBy
+     * 
+     * Allows you to filter on a field in the table
+     *
+     * @param  mixed $table Table name
+     * @param  mixed $field Search field name
+     * @param  mixed $value Wanted value
+     * @return array
+     */
+    public function findBy(string $table, string $field, string $value): array
+    {
+        $client = HttpClient::create();
+
+        $filterByFormula = "?filterByFormula=AND({".$field."} = '".$value."')";
+
+        $response = $client->request('GET', 'https://api.airtable.com/v0/'. $this->id .'/'. $table . $filterByFormula, [
+            'auth_bearer' => $this->key,
+        ]);
+
+        return $response->toArray()['records'];
+    }
+
+    public function findOneById(string $table, string $id): array
     {
         $client = HttpClient::create();
 
