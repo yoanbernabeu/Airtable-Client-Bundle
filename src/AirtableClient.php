@@ -64,4 +64,15 @@ class AirtableClient
 
         return $response->toArray();
     }
+
+    public function findTheLatest(string $table, $field): array
+    {
+        $client = HttpClient::create();
+
+        $response = $client->request('GET', 'https://api.airtable.com/v0/'. $this->id .'/'. $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D=' . $field . '&sort%5B0%5D%5Bdirection%5D=desc', [
+            'auth_bearer' => $this->key,
+        ]);
+
+        return $response->toArray()['records'];
+    }
 }

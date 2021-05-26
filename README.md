@@ -48,6 +48,7 @@ class foo
         $airtableClient->findAll('tableName', 'viewName');
         $airtableClient->findOneById('tableName', 'id');
         $airtableClient->findBy('tableName', 'fieldName', 'value');
+        $airtableClient->findTheLatest('tableName', 'fieldName');
         // ...
     }
 
