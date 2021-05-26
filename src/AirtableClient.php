@@ -4,6 +4,9 @@ namespace Yoanbernabeu\AirtableClientBundle;
 
 use Symfony\Component\HttpClient\HttpClient;
 
+/**
+ * AirtableClient
+ */
 class AirtableClient
 {
     private $key;
@@ -14,23 +17,26 @@ class AirtableClient
         $this->key = $key;
         $this->id = $id;
     }
-
+    
+    /**
+     * findAll
+     *
+     * @param  mixed $table Table name
+     * @param  mixed $view  View name
+     * @return array
+     */
     public function findAll(string $table, ?string $view = null): array
     {
-        $client = HttpClient::create();
-
         if ($view) {
             $view = '?view=' . $view;
         }
 
-        $response = $client->request('GET', 'https://api.airtable.com/v0/'. $this->id .'/'. $table . $view, [
-            'auth_bearer' => $this->key,
-        ]);
+        $url = $this->id .'/'. $table . $view;
+        $response = $this->request($url);
 
         return $response->toArray()['records'];
     }
 
-    
     /**
      * findBy
      *
@@ -43,42 +49,59 @@ class AirtableClient
      */
     public function findBy(string $table, string $field, string $value): array
     {
-        $client = HttpClient::create();
-
         $filterByFormula = "?filterByFormula=AND({".$field."} = '".$value."')";
-
-        $response = $client->request('GET', 'https://api.airtable.com/v0/'. $this->id .'/'. $table . $filterByFormula, [
-            'auth_bearer' => $this->key,
-        ]);
+        $url = $this->id .'/'. $table . $filterByFormula;
+        $response = $this->request($url);
 
         return $response->toArray()['records'];
     }
-
+    
+    /**
+     * findOneById
+     *
+     * @param  mixed $table Table Name
+     * @param  mixed $id Id
+     * @return array
+     */
     public function findOneById(string $table, string $id): array
     {
-        $client = HttpClient::create();
-
-        $response = $client->request('GET', 'https://api.airtable.com/v0/'. $this->id .'/'. $table . '/' . $id, [
-            'auth_bearer' => $this->key,
-        ]);
+        $url = $this->id .'/'. $table . '/' . $id;
+        $response = $this->request($url);
 
         return $response->toArray();
     }
-
+    
+    /**
+     * findTheLatest
+     *
+     * Field allowing filtering
+     *
+     * @param  mixed $table Table name
+     * @param  mixed $field
+     * @return array
+     */
     public function findTheLatest(string $table, $field): array
+    {
+        $url = $this->id .'/'
+            . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
+            . $field . '&sort%5B0%5D%5Bdirection%5D=desc';
+        $response = $this->request($url);
+
+        return $response->toArray()['records'][0];
+    }
+
+    public function request(string $url)
     {
         $client = HttpClient::create();
 
         $response = $client->request(
             'GET',
-            'https://api.airtable.com/v0/'. $this->id .'/'
-            . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
-            . $field . '&sort%5B0%5D%5Bdirection%5D=desc',
+            'https://api.airtable.com/v0/'. $url,
             [
                 'auth_bearer' => $this->key,
             ]
         );
 
-        return $response->toArray()['records'][0];
+        return $response;
     }
 }
