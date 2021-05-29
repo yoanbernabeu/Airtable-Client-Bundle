@@ -41,22 +41,20 @@ class AirtableClient
         $url = $this->id . '/' . $table . $view;
         $response = $this->request($url);
 
-        $airtableRecords = $response->toArray()['records'];
+        $airtableRecords = array_map(
+            fn ($record) => AirtableRecord::fromRecord($record),
+            $response->toArray()['records']
+        );
 
         if ($dataClass) {
-            $records = [];
-
             foreach ($airtableRecords as $record) {
-                $data = [
-                    "id" => $record['id'],
-                    "fields" => $this->normalizer->denormalize($record['fields'], $dataClass),
-                    "createdTime" => $record['createdTime']
-                ];
-
-                $records[] = $data;
+                $record->setFields(
+                    $this->normalizer->denormalize(
+                        $record->getFields(),
+                        $dataClass
+                    )
+                );
             }
-
-            return $records;
         }
 
         return $airtableRecords;
@@ -79,22 +77,20 @@ class AirtableClient
         $url = $this->id . '/' . $table . $filterByFormula;
         $response = $this->request($url);
 
-        $airtableRecords = $response->toArray()['records'];
+        $airtableRecords = array_map(
+            fn ($record) => AirtableRecord::fromRecord($record),
+            $response->toArray()['records']
+        );
 
         if ($dataClass) {
-            $records = [];
-
             foreach ($airtableRecords as $record) {
-                $data = [
-                    "id" => $record['id'],
-                    "fields" => $this->normalizer->denormalize($record['fields'], $dataClass),
-                    "createdTime" => $record['createdTime']
-                ];
-
-                $records[] = $data;
+                $record->setFields(
+                    $this->normalizer->denormalize(
+                        $record->getFields(),
+                        $dataClass
+                    )
+                );
             }
-
-            return $records;
         }
 
         return $airtableRecords;
@@ -106,24 +102,22 @@ class AirtableClient
      * @param  mixed $table Table Name
      * @param  mixed $id Id
      * @param  string $dataClass The name of the class which will hold fields data 
-     * @return array
+     * @return array|object
      */
-    public function findOneById(string $table, string $id, ?string $dataClass = null): array
+    public function findOneById(string $table, string $id, ?string $dataClass = null)
     {
         $url = $this->id . '/' . $table . '/' . $id;
         $response = $this->request($url);
 
-        $data = $response->toArray();
+        $airtableRecord = AirtableRecord::fromRecord($response->toArray());
 
         if ($dataClass) {
-            return [
-                'id' => $data['id'],
-                'fields' => $this->normalizer->denormalize($data['fields'], $dataClass),
-                'createdTime' => $data['createdTime']
-            ];
+            $airtableRecord->setFields(
+                $this->normalizer->denormalize($airtableRecord->getFields(), $dataClass)
+            );
         }
 
-        return $data;
+        return $airtableRecord;
     }
 
     /**
@@ -134,26 +128,24 @@ class AirtableClient
      * @param  mixed $table Table name
      * @param  mixed $field
      * @param  string $dataClass The name of the class which will hold fields data
-     * @return array
+     * @return AirtableRecord
      */
-    public function findTheLatest(string $table, $field, ?string $dataClass = null): array
+    public function findTheLatest(string $table, $field, ?string $dataClass = null): AirtableRecord
     {
         $url = $this->id . '/'
             . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
             . $field . '&sort%5B0%5D%5Bdirection%5D=desc';
         $response = $this->request($url);
 
-        $data = $response->toArray()['records'][0];
+        $airtableRecord = AirtableRecord::fromRecord($response->toArray()['records'][0]);
 
         if ($dataClass) {
-            return [
-                'id' => $data['id'],
-                'fields' => $this->normalizer->denormalize($data['fields'], $dataClass),
-                'createdTime' => $data['createdTime']
-            ];
+            $airtableRecord->setFields(
+                $this->normalizer->denormalize($airtableRecord->getFields(), $dataClass)
+            );
         }
 
-        return $data;
+        return $airtableRecord;
     }
 
     public function request(string $url)
