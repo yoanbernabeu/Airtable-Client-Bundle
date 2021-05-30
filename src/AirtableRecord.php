@@ -49,7 +49,7 @@ final class AirtableRecord
      * @param array $record
      *
      * @throws MissingRecordDataException
-     * 
+     *
      * @return void
      */
     public static function ensureRecordValidation(array $record): void

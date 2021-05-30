@@ -13,7 +13,11 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('key')
                     ->isRequired()
-                    ->info('The API key. Please refer to your account settings. See https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key-')
+                    ->info(
+                        'The API key.
+                        Please refer to your account settings.
+                        See https://support.airtable.com/hc/en-us/articles/219046777-How-do-I-get-my-API-key-'
+                    )
                 ->end()
                 ->scalarNode('id')
                     ->isRequired()
