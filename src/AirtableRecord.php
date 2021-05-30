@@ -2,25 +2,86 @@
 
 namespace Yoanbernabeu\AirtableClientBundle;
 
-use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
+use Exception;
+use Yoanbernabeu\AirtableClientBundle\Exception\MissingRecordDataException;
 
-class AirtableRecord
+final class AirtableRecord
 {
-    protected $fields;
-    protected string $id;
-    protected DateTimeInterface $createdTime;
+    private $fields;
+    private string $id;
+    private DateTimeInterface $createdTime;
 
-    public function __construct(string $id, $fields, DateTimeInterface $createdTime)
+    private function __construct(string $id, $fields, DateTimeInterface $createdTime)
     {
         $this->fields = $fields;
         $this->id = $id;
         $this->createdTime = $createdTime;
     }
 
-    public static function fromRecord(array $record): self
+
+    /**
+     * Returns an instance of AirtableRecord from values set in an array
+     * Mandatory values are :
+     * - id : the record id
+     * - fields : the record data fields
+     * - createdTime : the record created time (should be a valid datetime value)
+     *
+     * @param array $record The airtable record
+     *
+     * @return self
+     */
+    public static function createFromRecord(array $record): self
     {
-        return new self($record['id'], $record['fields'], new DateTime($record['createdTime']));
+        static::ensureRecordValidation($record);
+
+        return new self(
+            $record['id'],
+            $record['fields'],
+            new DateTimeImmutable($record['createdTime'])
+        );
+    }
+
+    /**
+     * Allow anyone to ensure that a record array is valid and can be transformed to a AirtableRecord object
+     *
+     * @param array $record
+     *
+     * @throws MissingRecordDataException
+     * 
+     * @return void
+     */
+    public static function ensureRecordValidation(array $record): void
+    {
+        $neededFields = ['id', 'fields', 'createdTime'];
+        $missingFields = [];
+
+        foreach ($neededFields as $key) {
+            if (!isset($record[$key])) {
+                $missingFields[] = $key;
+            }
+        }
+
+        if (count($missingFields) > 0) {
+            throw new MissingRecordDataException(
+                sprintf(
+                    'Expected values missing in record array : %s',
+                    implode(', ', $missingFields)
+                )
+            );
+        }
+
+        try {
+            new DateTimeImmutable($record['createdTime']);
+        } catch (Exception $e) {
+            throw new MissingRecordDataException(
+                sprintf(
+                    'Value passed in the "createdTime" value is not a valid DateTime : %s',
+                    $record['createdTime']
+                )
+            );
+        }
     }
 
     public function getFields()
@@ -35,27 +96,13 @@ class AirtableRecord
         return $this;
     }
 
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getCreatedTime()
+    public function getCreatedTime(): DateTimeInterface
     {
         return $this->createdTime;
-    }
-
-    public function setCreatedTime($createdTime)
-    {
-        $this->createdTime = $createdTime;
-
-        return $this;
     }
 }

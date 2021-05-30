@@ -2,7 +2,6 @@
 
 namespace Yoanbernabeu\AirtableClientBundle;
 
-use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -42,20 +41,15 @@ class AirtableClient
         $response = $this->request($url);
 
         $airtableRecords = array_map(
-            fn ($record) => AirtableRecord::fromRecord($record),
+            function (array $recordData) use ($dataClass) {
+                if ($dataClass) {
+                    $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+                }
+
+                return AirtableRecord::createFromRecord($recordData);
+            },
             $response->toArray()['records']
         );
-
-        if ($dataClass) {
-            foreach ($airtableRecords as $record) {
-                $record->setFields(
-                    $this->normalizer->denormalize(
-                        $record->getFields(),
-                        $dataClass
-                    )
-                );
-            }
-        }
 
         return $airtableRecords;
     }
@@ -78,20 +72,15 @@ class AirtableClient
         $response = $this->request($url);
 
         $airtableRecords = array_map(
-            fn ($record) => AirtableRecord::fromRecord($record),
+            function (array $recordData) use ($dataClass) {
+                if ($dataClass) {
+                    $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+                }
+
+                return AirtableRecord::createFromRecord($recordData);
+            },
             $response->toArray()['records']
         );
-
-        if ($dataClass) {
-            foreach ($airtableRecords as $record) {
-                $record->setFields(
-                    $this->normalizer->denormalize(
-                        $record->getFields(),
-                        $dataClass
-                    )
-                );
-            }
-        }
 
         return $airtableRecords;
     }
@@ -109,15 +98,13 @@ class AirtableClient
         $url = $this->id . '/' . $table . '/' . $id;
         $response = $this->request($url);
 
-        $airtableRecord = AirtableRecord::fromRecord($response->toArray());
+        $recordData = $response->toArray();
 
         if ($dataClass) {
-            $airtableRecord->setFields(
-                $this->normalizer->denormalize($airtableRecord->getFields(), $dataClass)
-            );
+            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
         }
 
-        return $airtableRecord;
+        return AirtableRecord::createFromRecord($recordData);
     }
 
     /**
@@ -128,22 +115,26 @@ class AirtableClient
      * @param  mixed $table Table name
      * @param  mixed $field
      * @param  string $dataClass The name of the class which will hold fields data
-     * @return AirtableRecord
+     * @return AirtableRecord|null
      */
-    public function findTheLatest(string $table, $field, ?string $dataClass = null): AirtableRecord
+    public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord
     {
         $url = $this->id . '/'
             . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
             . $field . '&sort%5B0%5D%5Bdirection%5D=desc';
         $response = $this->request($url);
 
-        $airtableRecord = AirtableRecord::fromRecord($response->toArray()['records'][0]);
+        $recordData = $response->toArray()['records'][0] ?? null;
+
+        if (!$recordData) {
+            return null;
+        }
 
         if ($dataClass) {
-            $airtableRecord->setFields(
-                $this->normalizer->denormalize($airtableRecord->getFields(), $dataClass)
-            );
+            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
         }
+
+        $airtableRecord = AirtableRecord::createFromRecord($recordData);
 
         return $airtableRecord;
     }
