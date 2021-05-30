@@ -11,6 +11,11 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class AirtableClient
 {
+    private $airTableApiKey;
+    private $airTableId;
+    private $httpClient;
+    private $normalizer;
+    
     public function __construct(string $airTableApiKey, string $airTableId, HttpClientInterface $httpClient, ObjectNormalizer $objectNormalizer)
     {
         $this->airTableApiKey = $airTableApiKey;
