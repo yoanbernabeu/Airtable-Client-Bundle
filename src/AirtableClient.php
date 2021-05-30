@@ -9,13 +9,13 @@ use Symfony\Component\HttpClient\HttpClient;
  */
 class AirtableClient
 {
-    private $key;
-    private $id;
+    private string $key;
+    private string $id;
     
-    public function __construct($key, $id)
+    public function __construct(string $airTableApiKey, string $airTableId)
     {
-        $this->key = $key;
-        $this->id = $id;
+        $this->key = $airTableApiKey;
+        $this->id = $airTableId;
     }
     
     /**
@@ -94,14 +94,12 @@ class AirtableClient
     {
         $client = HttpClient::create();
 
-        $response = $client->request(
+        return $client->request(
             'GET',
             'https://api.airtable.com/v0/'. $url,
             [
                 'auth_bearer' => $this->key,
             ]
         );
-
-        return $response;
     }
 }
