@@ -11,15 +11,15 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class AirtableClient
 {
-    private $airTableApiKey;
-    private $airTableId;
-    private $httpClient;
-    private $normalizer;
-    
-    public function __construct(string $airTableApiKey, string $airTableId, HttpClientInterface $httpClient, ObjectNormalizer $objectNormalizer)
+    private string $key;
+    private string $id;
+    private HttpClientInterface $httpClient;
+    private ObjectNormalizer $normalizer;
+
+    public function __construct(string $key, string $id, HttpClientInterface $httpClient, ObjectNormalizer $objectNormalizer)
     {
-        $this->airTableApiKey = $airTableApiKey;
-        $this->airTableId = $airTableId;
+        $this->key = $key;
+        $this->id = $id;
         $this->httpClient = $httpClient;
         $this->normalizer = $objectNormalizer;
     }
@@ -36,7 +36,7 @@ class AirtableClient
     {
         $url = sprintf(
             '%s/%s%s',
-            $this->airTableId,
+            $this->id,
             $table,
             $view ? '?view=' . $view : ''
         );
@@ -60,8 +60,7 @@ class AirtableClient
     public function findBy(string $table, string $field, string $value, ?string $dataClass = null): array
     {
         $filterByFormula = sprintf("?filterByFormula=AND({%s} = '%s')", $field, $value);
-        $url = sprintf('%s/%s%s', $this->airTableId, $table, $filterByFormula);
-
+        $url = sprintf('%s/%s%s', $this->id, $table, $filterByFormula);
         $response = $this->request($url);
 
         return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
@@ -77,8 +76,7 @@ class AirtableClient
      */
     public function findOneById(string $table, string $id, ?string $dataClass = null)
     {
-        $url = sprintf('%s/%s/%s', $this->airTableId, $table, $id);
-      
+        $url = sprintf('%s/%s/%s', $this->id, $table, $id);
         $response = $this->request($url);
 
         $recordData = $response->toArray();
@@ -102,7 +100,7 @@ class AirtableClient
      */
     public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord
     {
-        $url = $this->airTableId . '/'
+        $url = $this->id . '/'
             . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
             . $field . '&sort%5B0%5D%5Bdirection%5D=desc';
         $response = $this->request($url);
@@ -133,7 +131,7 @@ class AirtableClient
             'GET',
             'https://api.airtable.com/v0/' . $url,
             [
-                'auth_bearer' => $this->airTableApiKey,
+                'auth_bearer' => $this->key,
             ]
         );
     }
