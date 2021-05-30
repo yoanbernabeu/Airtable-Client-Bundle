@@ -1,4 +1,5 @@
 <?php
+
 namespace Yoanbernabeu\AirtableClientBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
