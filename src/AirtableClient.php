@@ -75,7 +75,7 @@ class AirtableClient
      *
      * @param  mixed $table Table Name
      * @param  mixed $id Id
-     * @param  string $dataClass The name of the class which will hold fields data 
+     * @param  string $dataClass The name of the class which will hold fields data
      * @return array|object
      */
     public function findOneById(string $table, string $id, ?string $dataClass = null)
