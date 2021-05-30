@@ -9,13 +9,13 @@ use Symfony\Component\HttpClient\HttpClient;
  */
 class AirtableClient
 {
-    private string $key;
-    private string $id;
+    private string $airTableApiKey;
+    private string $airTableId;
     
     public function __construct(string $airTableApiKey, string $airTableId)
     {
-        $this->key = $airTableApiKey;
-        $this->id = $airTableId;
+        $this->airTableApiKey = $airTableApiKey;
+        $this->airTableId = $airTableId;
     }
     
     /**
@@ -31,7 +31,7 @@ class AirtableClient
             $view = '?view=' . $view;
         }
 
-        $url = $this->id .'/'. $table . $view;
+        $url = $this->airTableId .'/'. $table . $view;
         $response = $this->request($url);
 
         return $response->toArray()['records'];
@@ -50,7 +50,7 @@ class AirtableClient
     public function findBy(string $table, string $field, string $value): array
     {
         $filterByFormula = "?filterByFormula=AND({".$field."} = '".$value."')";
-        $url = $this->id .'/'. $table . $filterByFormula;
+        $url = $this->airTableId .'/'. $table . $filterByFormula;
         $response = $this->request($url);
 
         return $response->toArray()['records'];
@@ -65,7 +65,7 @@ class AirtableClient
      */
     public function findOneById(string $table, string $id): array
     {
-        $url = $this->id .'/'. $table . '/' . $id;
+        $url = $this->airTableId .'/'. $table . '/' . $id;
         $response = $this->request($url);
 
         return $response->toArray();
@@ -82,7 +82,7 @@ class AirtableClient
      */
     public function findTheLatest(string $table, $field): array
     {
-        $url = $this->id .'/'
+        $url = $this->airTableId .'/'
             . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
             . $field . '&sort%5B0%5D%5Bdirection%5D=desc';
         $response = $this->request($url);
@@ -98,7 +98,7 @@ class AirtableClient
             'GET',
             'https://api.airtable.com/v0/'. $url,
             [
-                'auth_bearer' => $this->key,
+                'auth_bearer' => $this->airTableApiKey,
             ]
         );
     }
