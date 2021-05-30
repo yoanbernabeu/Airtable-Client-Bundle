@@ -1,24 +1,37 @@
 {
-    "name": "yoanbernabeu/airtable-client-bundle",
-    "description": "Simple Client for Airtable API",
-    "type": "symfony-bundle",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Yoan Bernabeu",
-            "email": "yoan.bernabeu@gmail.com"
-        }
-    ],
-    "require": {
-        "php": ">=7.4.3",
-        "symfony/http-client": "^5.2.8",
-        "symfony/config": "^5.2.8",
-        "symfony/dependency-injection": "^5.2.8",
-        "symfony/http-kernel": "^5.2.8"
-    },
-    "autoload": {
-        "psr-4": {
-            "Yoanbernabeu\\AirtableClientBundle\\": "src/"
-        }
+  "name": "yoanbernabeu/airtable-client-bundle",
+  "description": "Simple Client for Airtable API",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Yoan Bernabeu",
+      "email": "yoan.bernabeu@gmail.com"
     }
+  ],
+  "require": {
+    "php": ">=7.4.3",
+    "symfony/http-client": "^5.2.8",
+    "symfony/config": "^5.2.8",
+    "symfony/dependency-injection": "^5.2.8",
+    "symfony/http-kernel": "^5.2.8",
+    "symfony/serializer": "^5.2",
+    "symfony/property-access": "^5.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Yoanbernabeu\\AirtableClientBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Yoanbernabeu\\AirtableClientBundle\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "spatie/phpunit-watcher": "^1.23",
+    "pestphp/pest": "^1.3",
+    "symfony/framework-bundle": "^5.2"
+  }
 }
