@@ -16,8 +16,12 @@ class AirtableClient
     private HttpClientInterface $httpClient;
     private ObjectNormalizer $normalizer;
 
-    public function __construct(string $key, string $id, HttpClientInterface $httpClient, ObjectNormalizer $objectNormalizer)
-    {
+    public function __construct(
+        string $key,
+        string $id,
+        HttpClientInterface $httpClient,
+        ObjectNormalizer $objectNormalizer
+    ) {
         $this->key = $key;
         $this->id = $id;
         $this->httpClient = $httpClient;
@@ -71,7 +75,7 @@ class AirtableClient
      *
      * @param  mixed $table Table Name
      * @param  mixed $id Id
-     * @param  string $dataClass The name of the class which will hold fields data 
+     * @param  string $dataClass The name of the class which will hold fields data
      * @return array|object
      */
     public function findOneById(string $table, string $id, ?string $dataClass = null)

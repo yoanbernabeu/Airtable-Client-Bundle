@@ -26,6 +26,5 @@ return static function (ContainerConfigurator $container): void {
             '%yoanbernabeu_airtable_client.airtable_client.key%',
             '%yoanbernabeu_airtable_client.airtable_client.id%',
         ])
-        ->alias('yoanbernabeu_airtable_client.airtable_client')
     ;
 };
