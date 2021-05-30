@@ -4,6 +4,7 @@ namespace Yoanbernabeu\AirtableClientBundle;
 
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
  * AirtableClient
@@ -33,25 +34,16 @@ class AirtableClient
      */
     public function findAll(string $table, ?string $view = null, ?string $dataClass = null): array
     {
-        if ($view) {
-            $view = '?view=' . $view;
-        }
-
-        $url = $this->id . '/' . $table . $view;
-        $response = $this->request($url);
-
-        $airtableRecords = array_map(
-            function (array $recordData) use ($dataClass) {
-                if ($dataClass) {
-                    $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
-                }
-
-                return AirtableRecord::createFromRecord($recordData);
-            },
-            $response->toArray()['records']
+        $url = sprintf(
+            '%s/%s%s',
+            $this->id,
+            $table,
+            $view ? '?view=' . $view : ''
         );
 
-        return $airtableRecords;
+        $response = $this->request($url);
+
+        return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
     }
 
     /**
@@ -67,22 +59,11 @@ class AirtableClient
      */
     public function findBy(string $table, string $field, string $value, ?string $dataClass = null): array
     {
-        $filterByFormula = "?filterByFormula=AND({" . $field . "} = '" . $value . "')";
-        $url = $this->id . '/' . $table . $filterByFormula;
+        $filterByFormula = sprintf("?filterByFormula=AND({%s} = '%s')", $field, $value);
+        $url = sprintf('%s/%s%s', $this->id, $table, $filterByFormula);
         $response = $this->request($url);
 
-        $airtableRecords = array_map(
-            function (array $recordData) use ($dataClass) {
-                if ($dataClass) {
-                    $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
-                }
-
-                return AirtableRecord::createFromRecord($recordData);
-            },
-            $response->toArray()['records']
-        );
-
-        return $airtableRecords;
+        return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
     }
 
     /**
@@ -95,7 +76,7 @@ class AirtableClient
      */
     public function findOneById(string $table, string $id, ?string $dataClass = null)
     {
-        $url = $this->id . '/' . $table . '/' . $id;
+        $url = sprintf('%s/%s/%s', $this->id, $table, $id);
         $response = $this->request($url);
 
         $recordData = $response->toArray();
@@ -134,21 +115,48 @@ class AirtableClient
             $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
         }
 
-        $airtableRecord = AirtableRecord::createFromRecord($recordData);
-
-        return $airtableRecord;
+        return AirtableRecord::createFromRecord($recordData);
     }
 
-    public function request(string $url)
+    /**
+     * Use the HttpClient to request Airtable API and returns the response
+     *
+     * @param string $url
+     *
+     * @return ResponseInterface
+     */
+    private function request(string $url): ResponseInterface
     {
-        $response = $this->httpClient->request(
+        return $this->httpClient->request(
             'GET',
             'https://api.airtable.com/v0/' . $url,
             [
                 'auth_bearer' => $this->key,
             ]
         );
+    }
 
-        return $response;
+    /**
+     * Turns an array of arrays to an array of AirtableRecord objects
+     *
+     * @param array $records An array of arrays
+     * @param string $dataClass Optionnal class name which will hold record's fields
+     *
+     * @return array An array of AirtableRecords objects
+     */
+    private function mapRecordsToAirtableRecords(array $records, string $dataClass = null): array
+    {
+        $airtableRecords = array_map(
+            function (array $recordData) use ($dataClass) {
+                if ($dataClass) {
+                    $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+                }
+
+                return AirtableRecord::createFromRecord($recordData);
+            },
+            $records
+        );
+
+        return $airtableRecords;
     }
 }
