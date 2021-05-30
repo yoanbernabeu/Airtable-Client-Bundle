@@ -11,12 +11,12 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  */
 class AirtableClient
 {
-    private $key;
-    private $id;
-    private $httpClient;
-    private $normalizer;
+    private string $key;
+    private string $id;
+    private HttpClientInterface $httpClient;
+    private ObjectNormalizer $normalizer;
 
-    public function __construct($key, $id, HttpClientInterface $httpClient, ObjectNormalizer $objectNormalizer)
+    public function __construct(string $key, string $id, HttpClientInterface $httpClient, ObjectNormalizer $objectNormalizer)
     {
         $this->key = $key;
         $this->id = $id;
