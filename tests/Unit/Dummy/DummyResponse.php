@@ -6,7 +6,7 @@ namespace Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy;
 
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class MockResponse implements ResponseInterface
+class DummyResponse implements ResponseInterface
 {
     public $content;
     public $status;
