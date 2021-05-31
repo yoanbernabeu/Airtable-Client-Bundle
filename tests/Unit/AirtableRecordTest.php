@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
@@ -16,7 +18,7 @@ class AirtableRecordTest extends TestCase
     {
         $this->expectException(MissingRecordDataException::class);
 
-        $airtableRecord = AirtableRecord::createFromRecord($recordData);
+        AirtableRecord::createFromRecord($recordData);
     }
 
     public function invalidRecordArrayProvider()

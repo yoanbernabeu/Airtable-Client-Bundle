@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle;
 
 use DateTimeImmutable;
@@ -9,6 +11,9 @@ use Yoanbernabeu\AirtableClientBundle\Exception\MissingRecordDataException;
 
 final class AirtableRecord
 {
+    /**
+     * @var object|array<array-key, mixed>
+     */
     private $fields;
     private string $id;
     private DateTimeInterface $createdTime;
@@ -20,7 +25,6 @@ final class AirtableRecord
         $this->createdTime = $createdTime;
     }
 
-
     /**
      * Returns an instance of AirtableRecord from values set in an array
      * Mandatory values are :
@@ -31,10 +35,13 @@ final class AirtableRecord
      * @param array $record The airtable record
      *
      * @return self
+     *
+     * @throws MissingRecordDataException
+     * @throws Exception
      */
     public static function createFromRecord(array $record): self
     {
-        static::ensureRecordValidation($record);
+        self::ensureRecordValidation($record);
 
         return new self(
             $record['id'],
@@ -87,13 +94,6 @@ final class AirtableRecord
     public function getFields()
     {
         return $this->fields;
-    }
-
-    public function setFields($fields)
-    {
-        $this->fields = $fields;
-
-        return $this;
     }
 
     public function getId(): string

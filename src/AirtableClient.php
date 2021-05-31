@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle;
 
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -9,7 +11,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 /**
  * AirtableClient
  */
-class AirtableClient
+class AirtableClient implements AirtableClientInterface
 {
     private string $key;
     private string $id;
@@ -29,12 +31,7 @@ class AirtableClient
     }
 
     /**
-     * Returns a set of rows from AirTable
-     *
-     * @param  mixed   $table Table name
-     * @param  mixed   $view  View name
-     * @param  string  $dataClass The class name which will hold fields data
-     * @return array
+     * @inheritdoc
      */
     public function findAll(string $table, ?string $view = null, ?string $dataClass = null): array
     {
@@ -51,15 +48,7 @@ class AirtableClient
     }
 
     /**
-     * findBy
-     *
-     * Allows you to filter on a field in the table
-     *
-     * @param  mixed $table Table name
-     * @param  mixed $field Search field name
-     * @param  mixed $value Wanted value
-     * @param  string $dataClass The class name which will hold fields data
-     * @return array
+     * @inheritdoc
      */
     public function findBy(string $table, string $field, string $value, ?string $dataClass = null): array
     {
@@ -71,14 +60,9 @@ class AirtableClient
     }
 
     /**
-     * findOneById
-     *
-     * @param  mixed $table Table Name
-     * @param  mixed $id Id
-     * @param  string $dataClass The name of the class which will hold fields data
-     * @return array|object
+     * @inheritdoc
      */
-    public function findOneById(string $table, string $id, ?string $dataClass = null)
+    public function findOneById(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf('%s/%s/%s', $this->id, $table, $id);
         $response = $this->request($url);
@@ -93,14 +77,7 @@ class AirtableClient
     }
 
     /**
-     * findTheLatest
-     *
-     * Field allowing filtering
-     *
-     * @param  mixed $table Table name
-     * @param  mixed $field
-     * @param  string $dataClass The name of the class which will hold fields data
-     * @return AirtableRecord|null
+     * @inheritdoc
      */
     public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord
     {
