@@ -11,7 +11,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Yoanbernabeu\AirtableClientBundle\AirtableClient;
 use Yoanbernabeu\AirtableClientBundle\AirtableRecord;
 use Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy\Customer;
-use Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy\MockResponse;
+use Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy\DummyResponse;
 
 class AirtableClientTest extends TestCase
 {
@@ -315,7 +315,7 @@ class AirtableClientTest extends TestCase
             ->expects($this->once())
             ->method('request')
             ->with($expectedMethod, $expectedCallUrl)
-            ->willReturn(new MockResponse(
+            ->willReturn(new DummyResponse(
                 json_encode(
                     $expectedJsonData
                 )
