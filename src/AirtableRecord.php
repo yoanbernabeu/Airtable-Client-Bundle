@@ -35,10 +35,13 @@ final class AirtableRecord
      * @param array $record The airtable record
      *
      * @return self
+     *
+     * @throws MissingRecordDataException
+     * @throws Exception
      */
     public static function createFromRecord(array $record): self
     {
-        static::ensureRecordValidation($record);
+        self::ensureRecordValidation($record);
 
         return new self(
             $record['id'],
