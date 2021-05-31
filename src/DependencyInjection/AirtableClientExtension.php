@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -12,7 +14,7 @@ class AirtableClientExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');
 
         $configuration = $this->getConfiguration($configs, $container);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -15,6 +17,7 @@ class AirtableClientBundle extends Bundle
         if (null === $this->extension) {
             $this->extension = new AirtableClientExtension();
         }
+
         return $this->extension;
     }
 }

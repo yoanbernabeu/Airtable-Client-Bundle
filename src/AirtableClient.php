@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle;
 
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -7,7 +9,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
- * AirtableClient
+ * AirtableClient.
  */
 class AirtableClient
 {
@@ -25,12 +27,11 @@ class AirtableClient
     }
 
     /**
-     * Returns a set of rows from AirTable
+     * Returns a set of rows from AirTable.
      *
-     * @param  mixed   $table Table name
-     * @param  mixed   $view  View name
-     * @param  string  $dataClass The class name which will hold fields data
-     * @return array
+     * @param mixed  $table     Table name
+     * @param mixed  $view      View name
+     * @param string $dataClass The class name which will hold fields data
      */
     public function findAll(string $table, ?string $view = null, ?string $dataClass = null): array
     {
@@ -38,7 +39,7 @@ class AirtableClient
             '%s/%s%s',
             $this->id,
             $table,
-            $view ? '?view=' . $view : ''
+            $view ? '?view='.$view : ''
         );
 
         $response = $this->request($url);
@@ -47,15 +48,14 @@ class AirtableClient
     }
 
     /**
-     * findBy
+     * findBy.
      *
      * Allows you to filter on a field in the table
      *
-     * @param  mixed $table Table name
-     * @param  mixed $field Search field name
-     * @param  mixed $value Wanted value
-     * @param  string $dataClass The class name which will hold fields data
-     * @return array
+     * @param mixed  $table     Table name
+     * @param mixed  $field     Search field name
+     * @param mixed  $value     Wanted value
+     * @param string $dataClass The class name which will hold fields data
      */
     public function findBy(string $table, string $field, string $value, ?string $dataClass = null): array
     {
@@ -67,11 +67,12 @@ class AirtableClient
     }
 
     /**
-     * findOneById
+     * findOneById.
      *
-     * @param  mixed $table Table Name
-     * @param  mixed $id Id
-     * @param  string $dataClass The name of the class which will hold fields data 
+     * @param mixed  $table     Table Name
+     * @param mixed  $id        Id
+     * @param string $dataClass The name of the class which will hold fields data
+     *
      * @return array|object
      */
     public function findOneById(string $table, string $id, ?string $dataClass = null)
@@ -89,20 +90,19 @@ class AirtableClient
     }
 
     /**
-     * findTheLatest
+     * findTheLatest.
      *
      * Field allowing filtering
      *
-     * @param  mixed $table Table name
-     * @param  mixed $field
-     * @param  string $dataClass The name of the class which will hold fields data
-     * @return AirtableRecord|null
+     * @param mixed  $table     Table name
+     * @param mixed  $field
+     * @param string $dataClass The name of the class which will hold fields data
      */
     public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord
     {
-        $url = $this->id . '/'
-            . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
-            . $field . '&sort%5B0%5D%5Bdirection%5D=desc';
+        $url = $this->id.'/'
+            .$table.'?pageSize=1&sort%5B0%5D%5Bfield%5D='
+            .$field.'&sort%5B0%5D%5Bdirection%5D=desc';
         $response = $this->request($url);
 
         $recordData = $response->toArray()['records'][0] ?? null;
@@ -119,17 +119,13 @@ class AirtableClient
     }
 
     /**
-     * Use the HttpClient to request Airtable API and returns the response
-     *
-     * @param string $url
-     *
-     * @return ResponseInterface
+     * Use the HttpClient to request Airtable API and returns the response.
      */
     private function request(string $url): ResponseInterface
     {
         return $this->httpClient->request(
             'GET',
-            'https://api.airtable.com/v0/' . $url,
+            'https://api.airtable.com/v0/'.$url,
             [
                 'auth_bearer' => $this->key,
             ]
@@ -137,16 +133,16 @@ class AirtableClient
     }
 
     /**
-     * Turns an array of arrays to an array of AirtableRecord objects
+     * Turns an array of arrays to an array of AirtableRecord objects.
      *
-     * @param array $records An array of arrays
+     * @param array  $records   An array of arrays
      * @param string $dataClass Optionnal class name which will hold record's fields
      *
      * @return array An array of AirtableRecords objects
      */
     private function mapRecordsToAirtableRecords(array $records, string $dataClass = null): array
     {
-        $airtableRecords = array_map(
+        return array_map(
             function (array $recordData) use ($dataClass) {
                 if ($dataClass) {
                     $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
@@ -156,7 +152,5 @@ class AirtableClient
             },
             $records
         );
-
-        return $airtableRecords;
     }
 }

@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle;
 
+use function count;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
@@ -20,17 +23,14 @@ final class AirtableRecord
         $this->createdTime = $createdTime;
     }
 
-
     /**
      * Returns an instance of AirtableRecord from values set in an array
      * Mandatory values are :
      * - id : the record id
      * - fields : the record data fields
-     * - createdTime : the record created time (should be a valid datetime value)
+     * - createdTime : the record created time (should be a valid datetime value).
      *
      * @param array $record The airtable record
-     *
-     * @return self
      */
     public static function createFromRecord(array $record): self
     {
@@ -44,13 +44,9 @@ final class AirtableRecord
     }
 
     /**
-     * Allow anyone to ensure that a record array is valid and can be transformed to a AirtableRecord object
-     *
-     * @param array $record
+     * Allow anyone to ensure that a record array is valid and can be transformed to a AirtableRecord object.
      *
      * @throws MissingRecordDataException
-     * 
-     * @return void
      */
     public static function ensureRecordValidation(array $record): void
     {
@@ -64,23 +60,13 @@ final class AirtableRecord
         }
 
         if (count($missingFields) > 0) {
-            throw new MissingRecordDataException(
-                sprintf(
-                    'Expected values missing in record array : %s',
-                    implode(', ', $missingFields)
-                )
-            );
+            throw new MissingRecordDataException(sprintf('Expected values missing in record array : %s', implode(', ', $missingFields)));
         }
 
         try {
             new DateTimeImmutable($record['createdTime']);
         } catch (Exception $e) {
-            throw new MissingRecordDataException(
-                sprintf(
-                    'Value passed in the "createdTime" value is not a valid DateTime : %s',
-                    $record['createdTime']
-                )
-            );
+            throw new MissingRecordDataException(sprintf('Value passed in the "createdTime" value is not a valid DateTime : %s', $record['createdTime']));
         }
     }
 
