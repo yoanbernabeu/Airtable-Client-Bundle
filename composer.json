@@ -10,8 +10,8 @@
     }
   ],
   "require": {
-    "php": "^7.4.3",
-    "symfony/http-client": "5.2.*",
+    "php": ">=7.4.3",
+    "symfony/http-client": "^5.2.8",
     "symfony/config": "^5.2.8",
     "symfony/dependency-injection": "^5.2.8",
     "symfony/http-kernel": "^5.2.8",
