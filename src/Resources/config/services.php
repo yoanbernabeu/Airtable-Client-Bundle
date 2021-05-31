@@ -26,5 +26,5 @@ return static function (ContainerConfigurator $container): void {
         ])
     ;
 
-    $container->alias(AirtableClientInterface::class, AirtableClient::class);
+    $container->alias(AirtableClientInterface::class, 'airtable_client');
 };
