@@ -19,15 +19,15 @@ class AirtableClientKernel extends Kernel
     {
         return [
             new AirtableClientBundle(),
-            new FrameworkBundle()
+            new FrameworkBundle(),
         ];
     }
 
-    protected function configureContainer(ContainerConfigurator  $container, LoaderInterface $loader): void
+    protected function configureContainer(ContainerConfigurator $container, LoaderInterface $loader): void
     {
         $container->extension('airtable_client', [
-            "key" => "key",
-            "id" => "id"
+            'key' => 'key',
+            'id' => 'id',
         ]);
     }
 }

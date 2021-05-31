@@ -9,7 +9,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
- * AirtableClient
+ * AirtableClient.
  */
 class AirtableClient implements AirtableClientInterface
 {
@@ -31,7 +31,7 @@ class AirtableClient implements AirtableClientInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function findAll(string $table, ?string $view = null, ?string $dataClass = null): array
     {
@@ -39,7 +39,7 @@ class AirtableClient implements AirtableClientInterface
             '%s/%s%s',
             $this->id,
             $table,
-            $view ? '?view=' . $view : ''
+            $view ? '?view='.$view : ''
         );
 
         $response = $this->request($url);
@@ -48,7 +48,7 @@ class AirtableClient implements AirtableClientInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function findBy(string $table, string $field, string $value, ?string $dataClass = null): array
     {
@@ -60,7 +60,7 @@ class AirtableClient implements AirtableClientInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function findOneById(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
@@ -77,13 +77,13 @@ class AirtableClient implements AirtableClientInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord
     {
-        $url = $this->id . '/'
-            . $table . '?pageSize=1&sort%5B0%5D%5Bfield%5D='
-            . $field . '&sort%5B0%5D%5Bdirection%5D=desc';
+        $url = $this->id.'/'
+            .$table.'?pageSize=1&sort%5B0%5D%5Bfield%5D='
+            .$field.'&sort%5B0%5D%5Bdirection%5D=desc';
         $response = $this->request($url);
 
         $recordData = $response->toArray()['records'][0] ?? null;
@@ -100,17 +100,13 @@ class AirtableClient implements AirtableClientInterface
     }
 
     /**
-     * Use the HttpClient to request Airtable API and returns the response
-     *
-     * @param string $url
-     *
-     * @return ResponseInterface
+     * Use the HttpClient to request Airtable API and returns the response.
      */
     private function request(string $url): ResponseInterface
     {
         return $this->httpClient->request(
             'GET',
-            'https://api.airtable.com/v0/' . $url,
+            'https://api.airtable.com/v0/'.$url,
             [
                 'auth_bearer' => $this->key,
             ]
@@ -118,16 +114,16 @@ class AirtableClient implements AirtableClientInterface
     }
 
     /**
-     * Turns an array of arrays to an array of AirtableRecord objects
+     * Turns an array of arrays to an array of AirtableRecord objects.
      *
-     * @param array $records An array of arrays
+     * @param array  $records   An array of arrays
      * @param string $dataClass Optionnal class name which will hold record's fields
      *
      * @return array An array of AirtableRecords objects
      */
     private function mapRecordsToAirtableRecords(array $records, string $dataClass = null): array
     {
-        $airtableRecords = array_map(
+        return array_map(
             function (array $recordData) use ($dataClass) {
                 if ($dataClass) {
                     $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
@@ -137,7 +133,5 @@ class AirtableClient implements AirtableClientInterface
             },
             $records
         );
-
-        return $airtableRecords;
     }
 }
