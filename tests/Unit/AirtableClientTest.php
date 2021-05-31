@@ -62,8 +62,13 @@ class AirtableClientTest extends TestCase
             array_map(fn (AirtableRecord $record) => $record->getFields(), $results)
         );
 
+        $firstRecord = $results[0];
+
+        static::assertEquals("MOCK_ID", $firstRecord->getId());
+        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $firstRecord->getCreatedTime());
+
         /** @var Customer $customer */
-        $customer = $results[0]->getFields();
+        $customer = $firstRecord->getFields();
 
         static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
         static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
@@ -112,8 +117,13 @@ class AirtableClientTest extends TestCase
             array_map(fn (AirtableRecord $record) => $record->getFields(), $results)
         );
 
+        $firstRecord = $results[0];
+
+        static::assertEquals("MOCK_ID", $firstRecord->getId());
+        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $firstRecord->getCreatedTime());
+
         /** @var Customer $customer */
-        $customer = $results[0]->getFields();
+        $customer = $firstRecord->getFields();
 
         static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
         static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
@@ -160,6 +170,9 @@ class AirtableClientTest extends TestCase
 
         // And the fields should be instance of Customer
         static::assertInstanceOf(Customer::class, $firstRecord->getFields());
+
+        static::assertEquals("MOCK_ID", $firstRecord->getId());
+        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $firstRecord->getCreatedTime());
 
         /** @var Customer $customer */
         $customer = $firstRecord->getFields();
@@ -228,15 +241,17 @@ class AirtableClientTest extends TestCase
         );
 
         // When we call findTheLatest with a data class
-        $results = $airtableClient->findTheLatest("MOCK_TABLE", "MOCK_FIELD", Customer::class);
+        $record = $airtableClient->findTheLatest("MOCK_TABLE", "MOCK_FIELD", Customer::class);
 
         // Then the result should be a single AirtableRecord
-        static::assertInstanceOf(AirtableRecord::class, $results);
+        static::assertInstanceOf(AirtableRecord::class, $record);
         // And the fields should be instance of Customer
-        static::assertInstanceOf(Customer::class, $results->getFields());
+        static::assertInstanceOf(Customer::class, $record->getFields());
+        static::assertEquals("MOCK_ID", $record->getId());
+        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $record->getCreatedTime());
 
         /** @var Customer $customer */
-        $customer = $results->getFields();
+        $customer = $record->getFields();
 
         static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
         static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
@@ -271,12 +286,22 @@ class AirtableClientTest extends TestCase
         );
 
         // When we call findOneById with a data class
-        $results = $airtableClient->findOneById("MOCK_TABLE", "MOCK_ID", Customer::class);
+        $record = $airtableClient->findOneById("MOCK_TABLE", "MOCK_ID", Customer::class);
+        static::assertEquals("MOCK_ID", $record->getId());
+        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $record->getCreatedTime());
 
         // Then the result should be an AirtableRecord
-        static::assertInstanceOf(AirtableRecord::class, $results);
+        static::assertInstanceOf(AirtableRecord::class, $record);
         // And the fields should be instance of Customer
-        static::assertInstanceOf(Customer::class, $results->getFields());
+        static::assertInstanceOf(Customer::class, $record->getFields());
+
+        /** @var Customer $customer */
+        $customer = $record->getFields();
+
+        static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
+        static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
+        static::assertEquals(1, $customer->id);
+        static::assertEquals("1986-10-30", $customer->birthDay);
     }
 
     private function createHttpClientMock(
