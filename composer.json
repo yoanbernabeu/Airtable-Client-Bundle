@@ -11,12 +11,12 @@
   ],
   "require": {
     "php": ">=7.4.3",
-    "symfony/http-client": "^5.3",
-    "symfony/config": "^5.3",
-    "symfony/dependency-injection": "^5.3",
-    "symfony/http-kernel": "^5.3",
-    "symfony/serializer": "^5.3",
-    "symfony/property-access": "^5.3"
+    "symfony/http-client": "^5.0",
+    "symfony/config": "^5.0",
+    "symfony/dependency-injection": "^5.0",
+    "symfony/http-kernel": "^5.0",
+    "symfony/serializer": "^5.0",
+    "symfony/property-access": "^5.0"
   },
   "autoload": {
     "psr-4": {
@@ -30,7 +30,7 @@
   },
   "require-dev": {
     "ext-json": "*",
-    "symfony/framework-bundle": "^5.3",
-    "symfony/phpunit-bridge": "^5.3"
+    "symfony/framework-bundle": "^5.0",
+    "symfony/phpunit-bridge": "^5.0"
   }
 }
