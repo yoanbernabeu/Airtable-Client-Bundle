@@ -9,7 +9,7 @@ use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
 
 class AirtableClientTest extends KernelTestCase
 {
-    public function test(): void
+    public function testIfKernelBootingAndAirtableClientIsRegistered(): void
     {
         $kernel = self::bootKernel();
         $container = $kernel->getContainer();
