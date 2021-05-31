@@ -7,11 +7,24 @@
          failOnRisky="true"
          failOnWarning="true"
          verbose="true">
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <server name="KERNEL_CLASS" value="Yoanbernabeu\AirtableClientBundle\Tests\Functional\AirtableClientKernel"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+        <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5"/>
+        <server name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    </php>
+
     <testsuites>
         <testsuite name="default">
             <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
+
+    <listeners>
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
+    </listeners>
 
     <coverage cacheDirectory=".phpunit.cache/code-coverage"
               processUncoveredFiles="true">

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yoanbernabeu\AirtableClientBundle\DependencyInjection;
 
-use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -22,11 +21,6 @@ class AirtableClientExtension extends Extension
 
         $container->setParameter('yoanbernabeu_airtable_client.airtable_client.key', $config['key']);
         $container->setParameter('yoanbernabeu_airtable_client.airtable_client.id', $config['id']);
-    }
-
-    public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
-    {
-        return new Configuration();
     }
 
     public function getAlias(): string
