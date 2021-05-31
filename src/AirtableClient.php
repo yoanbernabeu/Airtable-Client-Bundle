@@ -81,9 +81,21 @@ class AirtableClient implements AirtableClientInterface
      */
     public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord
     {
-        $url = $this->id.'/'
-            .$table.'?pageSize=1&sort%5B0%5D%5Bfield%5D='
-            .$field.'&sort%5B0%5D%5Bdirection%5D=desc';
+        $params = [
+            'pageSize' => 1,
+            'sort' => [
+                0 => [
+                    'field' => $field,
+                    'direction' => 'desc',
+                ],
+            ],
+        ];
+        $url = sprintf(
+            '%s/%s?%s',
+            $this->id,
+            $table,
+            http_build_query($params)
+        );
         $response = $this->request($url);
 
         $recordData = $response->toArray()['records'][0] ?? null;
