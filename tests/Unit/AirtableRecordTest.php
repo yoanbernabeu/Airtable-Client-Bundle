@@ -18,7 +18,7 @@ class AirtableRecordTest extends TestCase
     {
         $this->expectException(MissingRecordDataException::class);
 
-        $airtableRecord = AirtableRecord::createFromRecord($recordData);
+        AirtableRecord::createFromRecord($recordData);
     }
 
     public function invalidRecordArrayProvider()

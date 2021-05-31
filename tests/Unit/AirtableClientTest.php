@@ -2,6 +2,8 @@
 
 namespace Yoanbernabeu\AirtableClientBundle\Tests\Unit;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -50,11 +52,23 @@ class AirtableClientTest extends TestCase
         );
 
         // When we call findAll()
-        $results = $airtableClient->findAll("MOCK_TABLE");
+        $results = $airtableClient->findAll("MOCK_TABLE", null, Customer::class);
 
         // The result is an array of AirtableRecords
         static::assertIsArray($results);
         static::assertInstanceOf(AirtableRecord::class, $results[0]);
+        static::assertContainsOnlyInstancesOf(
+            Customer::class,
+            array_map(fn (AirtableRecord $record) => $record->getFields(), $results)
+        );
+
+        /** @var Customer $customer */
+        $customer = $results[0]->getFields();
+
+        static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
+        static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
+        static::assertEquals(1, $customer->id);
+        static::assertEquals("1986-10-30", $customer->birthDay);
     }
 
     /** @test */
@@ -90,12 +104,21 @@ class AirtableClientTest extends TestCase
         // When we call findAll with a given data class
         $results = $airtableClient->findAll("MOCK_TABLE", null, Customer::class);
 
-        // Then it should return an array of AirtableRecords
-        $firstRecord = $results[0];
-        static::assertInstanceOf(AirtableRecord::class, $firstRecord);
+        // The result is an array of AirtableRecords
+        static::assertIsArray($results);
+        static::assertInstanceOf(AirtableRecord::class, $results[0]);
+        static::assertContainsOnlyInstancesOf(
+            Customer::class,
+            array_map(fn (AirtableRecord $record) => $record->getFields(), $results)
+        );
 
-        // And the fields should be hold inside a Customer object
-        static::assertInstanceOf(Customer::class, $firstRecord->getFields());
+        /** @var Customer $customer */
+        $customer = $results[0]->getFields();
+
+        static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
+        static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
+        static::assertEquals(1, $customer->id);
+        static::assertEquals("1986-10-30", $customer->birthDay);
     }
 
     /** @test */
@@ -137,6 +160,14 @@ class AirtableClientTest extends TestCase
 
         // And the fields should be instance of Customer
         static::assertInstanceOf(Customer::class, $firstRecord->getFields());
+
+        /** @var Customer $customer */
+        $customer = $firstRecord->getFields();
+
+        static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
+        static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
+        static::assertEquals(1, $customer->id);
+        static::assertEquals("1986-10-30", $customer->birthDay);
     }
 
     /** @test */
@@ -203,6 +234,14 @@ class AirtableClientTest extends TestCase
         static::assertInstanceOf(AirtableRecord::class, $results);
         // And the fields should be instance of Customer
         static::assertInstanceOf(Customer::class, $results->getFields());
+
+        /** @var Customer $customer */
+        $customer = $results->getFields();
+
+        static::assertEquals("MOCK_FIRST_NAME", $customer->firstName);
+        static::assertEquals("MOCK_LAST_NAME", $customer->lastName);
+        static::assertEquals(1, $customer->id);
+        static::assertEquals("1986-10-30", $customer->birthDay);
     }
 
     /** @test */
