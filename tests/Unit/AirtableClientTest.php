@@ -2,7 +2,6 @@
 
 namespace Yoanbernabeu\AirtableClientBundle\Tests\Unit;
 
-use DateTimeInterface;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
