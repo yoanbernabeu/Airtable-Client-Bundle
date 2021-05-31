@@ -140,6 +140,33 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
+    public function findLatest_will_return_null(): void
+    {
+        // Setup the dummy HttpClient
+        $httpClient = $this->createHttpClientMock(
+            "https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE?pageSize=1&sort%5B0%5D%5Bfield%5D=MOCK_FIELD&sort%5B0%5D%5Bdirection%5D=desc",
+            [
+                "records" => [
+                    []
+                ]
+            ]
+        );
+
+        // Given we have an airtable client
+        $airtableClient = new AirtableClient(
+            "MOCK_KEY",
+            "MOCK_ID",
+            $httpClient,
+            $this->normalizer
+        );
+
+        // When we call findTheLatest with a data class
+        $results = $airtableClient->findTheLatest("MOCK_TABLE", "MOCK_FIELD", Customer::class);
+
+        static::assertNull($results);
+    }
+
+    /** @test */
     public function findLatest_will_return_objects_if_data_class_is_set(): void
     {
         // Setup the dummy HttpClient
