@@ -38,11 +38,11 @@ To find your **Airtable API key**, go to your **Account options** and search in 
 
 ```php
 // ...
-use Yoanbernabeu\AirtableClientBundle\AirtableClient;
+use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
 
-class foo
+class Foo
 {
-    public function bar(AirtableClient $airtableClient)
+    public function bar(AirtableClientInterface $airtableClient)
     {
         // ...
         $airtableClient->findAll('tableName', 'viewName');
