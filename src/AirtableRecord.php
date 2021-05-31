@@ -95,4 +95,24 @@ final class AirtableRecord
     {
         return $this->fields;
     }
+
+    /**
+     * @param object|array<array-key, mixed> $fields
+     */
+    public function setFields($fields): self
+    {
+        $this->fields = $fields;
+
+        return $this;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getCreatedTime(): DateTimeInterface
+    {
+        return $this->createdTime;
+    }
 }
