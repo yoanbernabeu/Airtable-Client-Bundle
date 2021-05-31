@@ -37,19 +37,38 @@ To find your **Airtable API key**, go to your **Account options** and search in 
 ## Usage
 
 ```php
-// ...
+
 use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
 
 class Foo
 {
+    public int $id;
+    public string $bar;
+}
+
+class FooController
+{
     public function bar(AirtableClientInterface $airtableClient)
     {
-        // ...
-        $airtableClient->findAll('tableName', 'viewName');
-        $airtableClient->findOneById('tableName', 'id');
-        $airtableClient->findBy('tableName', 'fieldName', 'value');
+        $records = $airtableClient->findAll('tableName', 'viewName', Foo::class);
+        
+        foreach($records as $record) {
+            /** @var Foo $foo */
+            $foo = $record->getFields();
+            
+            echo $foo->bar;
+        }
+        
+        $airtableClient->findBy('tableName', 'fieldName', 'value', Foo::class);      
+          
+        $record = $airtableClient->findOneById('tableName', 'id');
+        
+        /** @var Foo $foo */
+        $foo = $record->getFields();
+            
+        echo $foo->bar;
+        
         $airtableClient->findTheLatest('tableName', 'fieldName');
-        // ...
     }
 
     // ...
