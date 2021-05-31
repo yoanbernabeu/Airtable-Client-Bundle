@@ -23,6 +23,11 @@ class AirtableClientExtension extends Extension
         $container->setParameter('yoanbernabeu_airtable_client.airtable_client.id', $config['id']);
     }
 
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration
+    {
+        return new Configuration();
+    }
+
     public function getAlias(): string
     {
         return 'airtable_client';
