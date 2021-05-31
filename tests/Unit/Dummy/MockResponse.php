@@ -1,6 +1,8 @@
 <?php
 
-namespace Yoanbernabeu\AirtableClientBundle\Tests;
+declare(strict_types=1);
+
+namespace Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy;
 
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
