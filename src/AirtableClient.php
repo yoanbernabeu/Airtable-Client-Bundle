@@ -39,7 +39,7 @@ class AirtableClient implements AirtableClientInterface
             '%s/%s%s',
             $this->id,
             $table,
-            $view ? '?view='.$view : ''
+            null !== $view ? '?view='.$view : ''
         );
 
         $response = $this->request($url);
@@ -69,7 +69,7 @@ class AirtableClient implements AirtableClientInterface
 
         $recordData = $response->toArray();
 
-        if ($dataClass) {
+        if (null !== $dataClass) {
             $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
         }
 
@@ -92,7 +92,7 @@ class AirtableClient implements AirtableClientInterface
             return null;
         }
 
-        if ($dataClass) {
+        if (null !== $dataClass) {
             $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
         }
 
@@ -124,8 +124,8 @@ class AirtableClient implements AirtableClientInterface
     private function mapRecordsToAirtableRecords(array $records, string $dataClass = null): array
     {
         return array_map(
-            function (array $recordData) use ($dataClass) {
-                if ($dataClass) {
+            function (array $recordData) use ($dataClass): AirtableRecord {
+                if (null !== $dataClass) {
                     $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
                 }
 

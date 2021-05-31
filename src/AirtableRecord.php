@@ -19,6 +19,9 @@ final class AirtableRecord
     private string $id;
     private DateTimeInterface $createdTime;
 
+    /**
+     * @param object|array<array-key, mixed> $fields
+     */
     private function __construct(string $id, $fields, DateTimeInterface $createdTime)
     {
         $this->fields = $fields;
@@ -76,6 +79,9 @@ final class AirtableRecord
         }
     }
 
+    /**
+     * @return object|array<array-key, mixed>
+     */
     public function getFields()
     {
         return $this->fields;

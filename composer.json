@@ -11,6 +11,11 @@
   ],
   "require": {
     "php": ">=7.4.3",
+    "phpstan/phpstan": "^0.12",
+    "phpstan/phpstan-beberlei-assert": "^0.12",
+    "phpstan/phpstan-deprecation-rules": "^0.12",
+    "phpstan/phpstan-phpunit": "^0.12",
+    "phpstan/phpstan-strict-rules": "^0.12",
     "symfony/http-client": "^5.0",
     "symfony/config": "^5.0",
     "symfony/dependency-injection": "^5.0",
@@ -33,5 +38,9 @@
     "ext-json": "*",
     "symfony/framework-bundle": "^5.0",
     "symfony/phpunit-bridge": "^5.0"
+  },
+  "scripts": {
+    "test:phpstan": "./vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr",
+    "test:cs": "./vendor/bin/php-cs-fixer fix --dry-run --stop-on-violation --using-cache=no"
   }
 }

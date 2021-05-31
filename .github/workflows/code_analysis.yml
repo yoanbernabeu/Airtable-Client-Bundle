@@ -1,9 +1,9 @@
-name: Coding Standard
+name: Static code analysis
 
 on: [push]
 
 jobs:
-  testing:
+  static-code-analysis:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -17,6 +17,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, xml, ctype, iconv, intl
+          tools: cs2pr
       - name: Get composer cache directory
         id: composer-cache
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
@@ -28,5 +29,7 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install Composer dependencies
         run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
-      - name: Check coding standard
+      - name: PHPStan
+        run: composer test:phpstan
+      - name: PHP-CS-Fixer
         run: composer test:cs

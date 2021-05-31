@@ -41,7 +41,7 @@ interface AirtableClientInterface
     /**
      * Field allowing filtering.
      *
-     * @param mixed       $table     Table name
+     * @param string      $table     Table name
      * @param mixed       $field
      * @param string|null $dataClass The name of the class which will hold fields data
      */

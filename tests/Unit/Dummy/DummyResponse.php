@@ -8,11 +8,11 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class DummyResponse implements ResponseInterface
 {
-    public $content;
-    public $status;
-    public $headers;
+    public string $content;
+    public int $status;
+    public array $headers;
 
-    public function __construct($content = '', $status = 200, $headers = [])
+    public function __construct(string $content = '', int $status = 200, array $headers = [])
     {
         $this->content = $content;
         $this->status = $status;
@@ -44,6 +44,6 @@ class DummyResponse implements ResponseInterface
 
     public function toArray(bool $throw = true): array
     {
-        return json_decode($this->content, true);
+        return json_decode($this->content, true, 512, JSON_THROW_ON_ERROR);
     }
 }
