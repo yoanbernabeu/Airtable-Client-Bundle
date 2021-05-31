@@ -11,6 +11,9 @@ use Yoanbernabeu\AirtableClientBundle\Exception\MissingRecordDataException;
 
 final class AirtableRecord
 {
+    /**
+     * @var object|array<array-key, mixed>
+     */
     private $fields;
     private string $id;
     private DateTimeInterface $createdTime;
