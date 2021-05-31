@@ -1,18 +1,18 @@
 <?php
 
-namespace Yoanbernabeu\AirtableClientBundle\Tests\Functionnal;
+namespace Yoanbernabeu\AirtableClientBundle\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Yoanbernabeu\AirtableClientBundle\AirtableClient;
 use Yoanbernabeu\AirtableClientBundle\AirtableRecord;
-use Yoanbernabeu\AirtableClientBundle\Tests\Functionnal\Mock\Customer;
-use Yoanbernabeu\AirtableClientBundle\Tests\MockResponse;
+use Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy\Customer;
+use Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy\MockResponse;
 
 class AirtableClientTest extends TestCase
 {
-    private $normalizer;
+    private ObjectNormalizer $normalizer;
 
     protected function setUp(): void
     {
@@ -20,7 +20,7 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
-    public function findAll_will_return_airtable_records()
+    public function findAll_will_return_airtable_records(): void
     {
         // Setup the dummy HttpClient
         $httpClient = $this->createHttpClientMock(
@@ -58,7 +58,7 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
-    public function findAll_will_return_objects_if_data_class_is_set()
+    public function findAll_will_return_objects_if_data_class_is_set(): void
     {
         // Setup the dummy HttpClient
         $httpClient = $this->createHttpClientMock(
@@ -99,7 +99,7 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
-    public function findBy_will_return_objects_if_data_class_is_set()
+    public function findBy_will_return_objects_if_data_class_is_set(): void
     {
         // Setup the dummy HttpClient
         $httpClient = $this->createHttpClientMock(
@@ -140,7 +140,7 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
-    public function findLatest_will_return_objects_if_data_class_is_set()
+    public function findLatest_will_return_objects_if_data_class_is_set(): void
     {
         // Setup the dummy HttpClient
         $httpClient = $this->createHttpClientMock(
@@ -179,7 +179,7 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
-    public function findOneById_will_return_object_if_data_class_is_set()
+    public function findOneById_will_return_object_if_data_class_is_set(): void
     {
         // Setup the dummy HttpClient
         $httpClient = $this->createHttpClientMock(
@@ -213,8 +213,11 @@ class AirtableClientTest extends TestCase
         static::assertInstanceOf(Customer::class, $results->getFields());
     }
 
-    private function createHttpClientMock(string $expectedCallUrl, array $expectedJsonData = [], string $expectedMethod = 'GET')
-    {
+    private function createHttpClientMock(
+        string $expectedCallUrl,
+        array $expectedJsonData = [],
+        string $expectedMethod = 'GET'
+    ): HttpClientInterface {
         $httpClient = $this->createMock(HttpClientInterface::class);
         $httpClient
             ->expects($this->once())
