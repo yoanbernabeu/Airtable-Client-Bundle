@@ -25,7 +25,6 @@ final class AirtableRecord
         $this->createdTime = $createdTime;
     }
 
-
     /**
      * Returns an instance of AirtableRecord from values set in an array
      * Mandatory values are :
