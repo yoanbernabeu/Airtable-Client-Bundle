@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yoanbernabeu\AirtableClientBundle;
 
 use DateTimeImmutable;
@@ -89,7 +91,7 @@ final class AirtableRecord
         return $this->fields;
     }
 
-    public function setFields($fields)
+    public function setFields($fields): self
     {
         $this->fields = $fields;
 
