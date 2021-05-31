@@ -17,7 +17,7 @@ return static function (ContainerConfigurator $container): void {
         ->autowire()
     ;
 
-    $container->set(AirtableClient::class, AirtableClient::class)
+    $container->set('airtable_client', AirtableClient::class)
         ->args([
             '%yoanbernabeu_airtable_client.airtable_client.key%',
             '%yoanbernabeu_airtable_client.airtable_client.id%',
