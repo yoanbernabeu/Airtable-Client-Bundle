@@ -18,8 +18,12 @@ class AirtableClient implements AirtableClientInterface
     private HttpClientInterface $httpClient;
     private ObjectNormalizer $normalizer;
 
-    public function __construct(string $key, string $id, HttpClientInterface $httpClient, ObjectNormalizer $objectNormalizer)
-    {
+    public function __construct(
+        string $key,
+        string $id,
+        HttpClientInterface $httpClient,
+        ObjectNormalizer $objectNormalizer
+    ) {
         $this->key = $key;
         $this->id = $id;
         $this->httpClient = $httpClient;
