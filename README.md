@@ -1,7 +1,8 @@
 Airtable Client Bundle (Work In Progress)
 ==================
 
-[![Static code analysis](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/main.yml/badge.svg)](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/main.yml)
+[![Static code analysis](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/code_analysis.yml/badge.svg)](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/code_analysis.yml)
+[![Testing](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/testing.yml/badge.svg)](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/testing.yml)
 
 The Airtable Client bundle is a Symfony bundle that attempts to make the Airtable API easier to use.
 

@@ -1,4 +1,3 @@
-# .github/workflows/static-code-analysis.yml
 name: Static code analysis
 
 on: [push]
@@ -6,13 +5,31 @@ on: [push]
 jobs:
   static-code-analysis:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['7.4']
     steps:
-      - uses: actions/checkout@master
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup PHP, with composer and extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, xml, ctype, iconv, intl
+          tools: cs2pr
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Cache composer dependencies
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
       - name: PHPStan
-        uses: docker://jakzal/phpqa:php7.4-alpine
-        with:
-          args: phpstan analyze src/ -l 1
+        run: composer test:phpstan
       - name: PHP-CS-Fixer
-        uses: docker://jakzal/phpqa:php7.4-alpine
-        with:
-          args: phpcs -v --standard=PSR2 ./src
+        run: composer test:cs

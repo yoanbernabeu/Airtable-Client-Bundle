@@ -13,7 +13,7 @@ class AirtableClientExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $loader = new PhpFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new PhpFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.php');
 
         $configuration = $this->getConfiguration($configs, $container);
@@ -21,6 +21,11 @@ class AirtableClientExtension extends Extension
 
         $container->setParameter('yoanbernabeu_airtable_client.airtable_client.key', $config['key']);
         $container->setParameter('yoanbernabeu_airtable_client.airtable_client.id', $config['id']);
+    }
+
+    public function getConfiguration(array $config, ContainerBuilder $container): Configuration
+    {
+        return new Configuration();
     }
 
     public function getAlias(): string

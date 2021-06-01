@@ -17,6 +17,7 @@ class AirtableClientBundle extends Bundle
         if (null === $this->extension) {
             $this->extension = new AirtableClientExtension();
         }
+
         return $this->extension;
     }
 }
