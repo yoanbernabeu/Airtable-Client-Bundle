@@ -48,7 +48,7 @@ This project has adopted the [Contributor Covenant Code of Conduct](CODE_OF_COND
 
 
 ## Security issue notifications
-If you discover a potential security issue in this project we ask that you notify the owner via email [contat@yoandev.co](contact@yoandev.co). Please do **not** create a public github issue.
+If you discover a potential security issue in this project we ask that you notify the owner via email [contact@yoandev.co](mailto:contact@yoandev.co). Please do **not** create a public github issue.
 
 
 ## Licensing
