@@ -70,7 +70,7 @@ class AirtableClient implements AirtableClientInterface
         $recordData = $response->toArray();
 
         if (null !== $dataClass) {
-            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+            $recordData = $this->createRecordFromResponse($dataClass, $recordData);
         }
 
         return AirtableRecord::createFromRecord($recordData);
@@ -105,7 +105,7 @@ class AirtableClient implements AirtableClientInterface
         }
 
         if (null !== $dataClass) {
-            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+            $recordData = $this->createRecordFromResponse($dataClass, $recordData);
         }
 
         return AirtableRecord::createFromRecord($recordData);
@@ -130,7 +130,7 @@ class AirtableClient implements AirtableClientInterface
         }
 
         if (null !== $dataClass) {
-            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+            $recordData = $this->createRecordFromResponse($dataClass, $recordData);
         }
 
         return AirtableRecord::createFromRecord($recordData);
@@ -168,12 +168,25 @@ class AirtableClient implements AirtableClientInterface
         return array_map(
             function (array $recordData) use ($dataClass): AirtableRecord {
                 if (null !== $dataClass) {
-                    $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+                    $recordData = $this->createRecordFromResponse($dataClass, $recordData);
                 }
 
                 return AirtableRecord::createFromRecord($recordData);
             },
             $records
         );
+    }
+    
+    /**
+     * Create record from response
+     *
+     * @param  string|null   $dataClass
+     * @param  array         $recordData
+     * @return array
+     */
+    private function createRecordFromResponse(?string $dataClass = null, array $recordData)
+    {
+        $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+        return $recordData;
     }
 }
