@@ -143,7 +143,7 @@ class AirtableClient implements AirtableClientInterface
     {
         $params = ['auth_bearer' => $this->key];
 
-        if ($method == 'POST') {
+        if ('POST' === $method) {
             $params = $params + ['headers' => ['Content-Type' => 'application/json']];
             $params = $params + ['body' => json_encode(['fields' => $body])];
         }

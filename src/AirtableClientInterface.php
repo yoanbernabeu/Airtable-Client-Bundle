@@ -51,7 +51,7 @@ interface AirtableClientInterface
      * Create news records and return the new record of a table.
      *
      * @param string      $table     Table name
-     * @param array       $fields     Table fields
+     * @param array       $fields    Table fields
      * @param string|null $dataClass The name of the class which will hold fields data
      */
     public function addOneRecord(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord;
