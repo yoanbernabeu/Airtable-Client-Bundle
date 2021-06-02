@@ -179,7 +179,7 @@ class AirtableClient implements AirtableClientInterface
 
     /**
      * Create record from response.
-     * 
+     *
      * @return array An AirtableRecord object
      */
     private function createRecordFromResponse(?string $dataClass = null, array $recordData)
