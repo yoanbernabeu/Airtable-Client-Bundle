@@ -48,7 +48,7 @@ interface AirtableClientInterface
     public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord;
 
     /**
-     * Create news records and return the new record of a table.
+     * Create new record and return the new record of a table.
      *
      * @param string      $table     Table name
      * @param array       $fields    Table fields

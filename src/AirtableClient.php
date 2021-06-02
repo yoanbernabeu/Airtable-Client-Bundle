@@ -42,7 +42,7 @@ class AirtableClient implements AirtableClientInterface
             null !== $view ? '?view='.$view : ''
         );
 
-        $response = $this->request($url, 'GET');
+        $response = $this->request('GET', $url);
 
         return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
     }
@@ -54,7 +54,7 @@ class AirtableClient implements AirtableClientInterface
     {
         $filterByFormula = sprintf("?filterByFormula=AND({%s} = '%s')", $field, $value);
         $url = sprintf('%s/%s%s', $this->id, $table, $filterByFormula);
-        $response = $this->request($url, 'GET');
+        $response = $this->request('GET', $url);
 
         return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
     }
@@ -65,7 +65,7 @@ class AirtableClient implements AirtableClientInterface
     public function findOneById(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf('%s/%s/%s', $this->id, $table, $id);
-        $response = $this->request($url, 'GET');
+        $response = $this->request('GET', $url);
 
         $recordData = $response->toArray();
 
@@ -96,9 +96,9 @@ class AirtableClient implements AirtableClientInterface
             $table,
             http_build_query($params)
         );
-        $response = $this->request($url, 'GET');
+        $response = $this->request('GET', $url);
 
-        $recordData = $response->toArray()['records'][0] ?? null;
+        $recordData = $response->toArray()['records'][0];
 
         if (!$recordData) {
             return null;
@@ -121,9 +121,9 @@ class AirtableClient implements AirtableClientInterface
             $this->id,
             $table
         );
-        $response = $this->request($url, 'POST', $fields);
+        $response = $this->request('POST', $url, $fields);
 
-        $recordData = $response->toArray() ?? null;
+        $recordData = $response->toArray();
 
         if (!$recordData['id']) {
             return null;
@@ -139,13 +139,13 @@ class AirtableClient implements AirtableClientInterface
     /**
      * Use the HttpClient to request Airtable API and returns the response.
      */
-    private function request(string $url, string $method, ?array $body = null): ResponseInterface
+    private function request(string $method, string $url, ?array $body = null): ResponseInterface
     {
         $params = ['auth_bearer' => $this->key];
 
         if ('POST' === $method) {
             $params = $params + ['headers' => ['Content-Type' => 'application/json']];
-            $params = $params + ['body' => json_encode(['fields' => $body])];
+            $params = $params + ['json' => ['fields' => $body]];
         }
 
         return $this->httpClient->request(
