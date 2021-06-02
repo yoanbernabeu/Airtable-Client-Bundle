@@ -69,9 +69,7 @@ class AirtableClient implements AirtableClientInterface
 
         $recordData = $response->toArray();
 
-        if (null !== $dataClass) {
-            $recordData = $this->createRecordFromResponse($dataClass, $recordData);
-        }
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
 
         return AirtableRecord::createFromRecord($recordData);
     }
@@ -104,9 +102,7 @@ class AirtableClient implements AirtableClientInterface
             return null;
         }
 
-        if (null !== $dataClass) {
-            $recordData = $this->createRecordFromResponse($dataClass, $recordData);
-        }
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
 
         return AirtableRecord::createFromRecord($recordData);
     }
@@ -129,9 +125,7 @@ class AirtableClient implements AirtableClientInterface
             return null;
         }
 
-        if (null !== $dataClass) {
-            $recordData = $this->createRecordFromResponse($dataClass, $recordData);
-        }
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
 
         return AirtableRecord::createFromRecord($recordData);
     }
@@ -180,12 +174,16 @@ class AirtableClient implements AirtableClientInterface
     /**
      * Create record from response.
      *
-     * @return array An AirtableRecord object
+     * @return array|null An AirtableRecord object
      */
     private function createRecordFromResponse(?string $dataClass = null, array $recordData)
     {
-        $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+        if (null !== $dataClass) {
+            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
 
-        return $recordData;
+            return $recordData;
+        }
+
+        return null;
     }
 }
