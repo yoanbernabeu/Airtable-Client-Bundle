@@ -121,7 +121,7 @@ class AirtableClient implements AirtableClientInterface
 
         $recordData = $response->toArray();
 
-        if (null == $recordData) {
+        if (null === $recordData) {
             return null;
         }
 
