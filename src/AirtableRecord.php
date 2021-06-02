@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yoanbernabeu\AirtableClientBundle;
 
-use function count;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Exception;
@@ -12,6 +11,12 @@ use Yoanbernabeu\AirtableClientBundle\Exception\MissingRecordDataException;
 
 final class AirtableRecord
 {
+    private const MANDATORY_FIELDS = [
+        'id',
+        'fields',
+        'createdTime',
+    ];
+
     /**
      * @var object|array<array-key, mixed>
      */
@@ -43,40 +48,15 @@ final class AirtableRecord
      */
     public static function createFromRecord(array $record): self
     {
-        self::ensureRecordValidation($record);
+        self::assertRecordPayload($record);
+
+        ['id' => $id, 'fields' => $fields, 'createdTime' => $createdTime] = $record;
 
         return new self(
-            $record['id'],
-            $record['fields'],
-            new DateTimeImmutable($record['createdTime'])
+            $id,
+            $fields,
+            new DateTimeImmutable($createdTime)
         );
-    }
-
-    /**
-     * Allow anyone to ensure that a record array is valid and can be transformed to a AirtableRecord object.
-     *
-     * @throws MissingRecordDataException
-     */
-    public static function ensureRecordValidation(array $record): void
-    {
-        $neededFields = ['id', 'fields', 'createdTime'];
-        $missingFields = [];
-
-        foreach ($neededFields as $key) {
-            if (!isset($record[$key])) {
-                $missingFields[] = $key;
-            }
-        }
-
-        if (count($missingFields) > 0) {
-            throw new MissingRecordDataException(sprintf('Expected values missing in record array : %s', implode(', ', $missingFields)));
-        }
-
-        try {
-            new DateTimeImmutable($record['createdTime']);
-        } catch (Exception $e) {
-            throw new MissingRecordDataException(sprintf('Value passed in the "createdTime" value is not a valid DateTime : %s', $record['createdTime']));
-        }
     }
 
     /**
@@ -95,5 +75,23 @@ final class AirtableRecord
     public function getCreatedTime(): DateTimeInterface
     {
         return $this->createdTime;
+    }
+
+    /**
+     * Assert that the record payload and can be transformed to a AirtableRecord object.
+     *
+     * @throws MissingRecordDataException
+     */
+    private static function assertRecordPayload(array $payload): void
+    {
+        if ([] !== $missingFields = array_diff_key(array_flip(self::MANDATORY_FIELDS), $payload)) {
+            throw MissingRecordDataException::missingData(array_keys($missingFields));
+        }
+
+        try {
+            new DateTimeImmutable($payload['createdTime'] ?? '');
+        } catch (Exception $e) {
+            throw MissingRecordDataException::invalidCreatedTime($payload['createdTime']);
+        }
     }
 }
