@@ -121,7 +121,7 @@ class AirtableClient implements AirtableClientInterface
 
         $recordData = $response->toArray();
 
-        if (!$recordData['id']) {
+        if (null == $recordData) {
             return null;
         }
 
@@ -174,7 +174,7 @@ class AirtableClient implements AirtableClientInterface
     /**
      * Create record from response.
      *
-     * @return array|null An AirtableRecord object
+     * @return array An AirtableRecord object
      */
     private function createRecordFromResponse(?string $dataClass = null, array $recordData)
     {
@@ -184,6 +184,6 @@ class AirtableClient implements AirtableClientInterface
             return $recordData;
         }
 
-        return null;
+        return $recordData;
     }
 }
