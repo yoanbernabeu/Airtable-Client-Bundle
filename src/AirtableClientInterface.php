@@ -46,4 +46,13 @@ interface AirtableClientInterface
      * @param string|null $dataClass The name of the class which will hold fields data
      */
     public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord;
+
+    /**
+     * Create news records and return the new record of a table.
+     *
+     * @param string      $table     Table name
+     * @param array       $field     Table fields
+     * @param string|null $dataClass The name of the class which will hold fields data
+     */
+    public function addOneRecord(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord;
 }
