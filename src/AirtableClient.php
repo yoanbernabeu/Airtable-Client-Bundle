@@ -127,7 +127,7 @@ final class AirtableClient implements AirtableClientInterface
      * Turns an array of arrays to an array of AirtableRecord objects.
      *
      * @param array  $records   An array of arrays
-     * @param string $dataClass Optionnal class name which will hold record's fields
+     * @param string $dataClass Optional class name which will hold record's fields
      *
      * @return array An array of AirtableRecords objects
      */

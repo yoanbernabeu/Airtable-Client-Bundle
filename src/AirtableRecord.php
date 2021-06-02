@@ -17,11 +17,10 @@ final class AirtableRecord
         'createdTime',
     ];
 
-    /**
-     * @var object|array<array-key, mixed>
-     */
-    private $fields;
     private string $id;
+    /** @var object|array<array-key, mixed> */
+    private $fields;
+
     private DateTimeInterface $createdTime;
 
     /**
@@ -29,8 +28,8 @@ final class AirtableRecord
      */
     private function __construct(string $id, $fields, DateTimeInterface $createdTime)
     {
-        $this->fields = $fields;
         $this->id = $id;
+        $this->fields = $fields;
         $this->createdTime = $createdTime;
     }
 

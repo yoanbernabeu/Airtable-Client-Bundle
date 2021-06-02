@@ -6,6 +6,9 @@ namespace Yoanbernabeu\AirtableClientBundle\Exception;
 
 use Exception;
 
+/**
+ * MissingRecordDataException.
+ */
 final class MissingRecordDataException extends Exception
 {
     public static function missingData(array $missingFields): self
