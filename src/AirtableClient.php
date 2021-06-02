@@ -176,17 +176,14 @@ class AirtableClient implements AirtableClientInterface
             $records
         );
     }
-    
+
     /**
-     * Create record from response
-     *
-     * @param  string|null   $dataClass
-     * @param  array         $recordData
-     * @return array
+     * Create record from response.
      */
     private function createRecordFromResponse(?string $dataClass = null, array $recordData)
     {
         $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+
         return $recordData;
     }
 }
