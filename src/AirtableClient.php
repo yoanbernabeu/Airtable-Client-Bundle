@@ -42,7 +42,7 @@ class AirtableClient implements AirtableClientInterface
             null !== $view ? '?view='.$view : ''
         );
 
-        $response = $this->request($url);
+        $response = $this->request('GET', $url);
 
         return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
     }
@@ -54,7 +54,7 @@ class AirtableClient implements AirtableClientInterface
     {
         $filterByFormula = sprintf("?filterByFormula=AND({%s} = '%s')", $field, $value);
         $url = sprintf('%s/%s%s', $this->id, $table, $filterByFormula);
-        $response = $this->request($url);
+        $response = $this->request('GET', $url);
 
         return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
     }
@@ -65,13 +65,11 @@ class AirtableClient implements AirtableClientInterface
     public function findOneById(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf('%s/%s/%s', $this->id, $table, $id);
-        $response = $this->request($url);
+        $response = $this->request('GET', $url);
 
         $recordData = $response->toArray();
 
-        if (null !== $dataClass) {
-            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
-        }
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
 
         return AirtableRecord::createFromRecord($recordData);
     }
@@ -96,17 +94,38 @@ class AirtableClient implements AirtableClientInterface
             $table,
             http_build_query($params)
         );
-        $response = $this->request($url);
+        $response = $this->request('GET', $url);
 
-        $recordData = $response->toArray()['records'][0] ?? null;
+        $recordData = $response->toArray()['records'][0];
 
         if (!$recordData) {
             return null;
         }
 
-        if (null !== $dataClass) {
-            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
+
+        return AirtableRecord::createFromRecord($recordData);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addOneRecord(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord
+    {
+        $url = sprintf(
+            '%s/%s',
+            $this->id,
+            $table
+        );
+        $response = $this->request('POST', $url, $fields);
+
+        $recordData = $response->toArray();
+
+        if (null == $recordData) {
+            return null;
         }
+
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
 
         return AirtableRecord::createFromRecord($recordData);
     }
@@ -114,14 +133,19 @@ class AirtableClient implements AirtableClientInterface
     /**
      * Use the HttpClient to request Airtable API and returns the response.
      */
-    private function request(string $url): ResponseInterface
+    private function request(string $method, string $url, ?array $body = null): ResponseInterface
     {
+        $params = ['auth_bearer' => $this->key];
+
+        if ('POST' === $method) {
+            $params = $params + ['headers' => ['Content-Type' => 'application/json']];
+            $params = $params + ['json' => ['fields' => $body]];
+        }
+
         return $this->httpClient->request(
-            'GET',
+            $method,
             'https://api.airtable.com/v0/'.$url,
-            [
-                'auth_bearer' => $this->key,
-            ]
+            $params
         );
     }
 
@@ -138,12 +162,28 @@ class AirtableClient implements AirtableClientInterface
         return array_map(
             function (array $recordData) use ($dataClass): AirtableRecord {
                 if (null !== $dataClass) {
-                    $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+                    $recordData = $this->createRecordFromResponse($dataClass, $recordData);
                 }
 
                 return AirtableRecord::createFromRecord($recordData);
             },
             $records
         );
+    }
+
+    /**
+     * Create record from response.
+     *
+     * @return array An AirtableRecord object
+     */
+    private function createRecordFromResponse(?string $dataClass = null, array $recordData)
+    {
+        if (null !== $dataClass) {
+            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+
+            return $recordData;
+        }
+
+        return $recordData;
     }
 }

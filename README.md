@@ -70,6 +70,15 @@ class FooController
         echo $foo->bar;
         
         $airtableClient->findTheLatest('tableName', 'fieldName');
+
+        $airtableClient->addOneRecord(
+            'tableName',
+            [
+                'id' => 1,
+                'bar' => 'lorem ipsum',
+                ClassTest::class
+            ]
+        );
     }
 
     // ...

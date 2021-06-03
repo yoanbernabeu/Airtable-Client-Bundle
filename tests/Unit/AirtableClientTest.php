@@ -308,6 +308,65 @@ class AirtableClientTest extends TestCase
         static::assertEquals('1986-10-30', $customer->birthDay);
     }
 
+    /** @test */
+    public function addOneRecordWillReturnNull()
+    {
+        // Setup the dummy HttpClient
+        $httpClient = $this->createHttpClientMock(
+            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE',
+            [],
+            'POST'
+        );
+
+        // Given we have an airtable client
+        $airtableClient = new AirtableClient(
+            'MOCK_KEY',
+            'MOCK_ID',
+            $httpClient,
+            $this->normalizer
+        );
+
+        // When we call addOneRecord with a data class
+        $record = $airtableClient->addOneRecord('MOCK_TABLE', [], Customer::class);
+
+        static::assertNull($record);
+    }
+
+    /** @test */
+    public function addOneRecordWillReturnObjectIfDataClassIsSet()
+    {
+        // Setup the dummy HttpClient
+        $httpClient = $this->createHttpClientMock(
+            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE',
+            [
+                'id' => 'MOCK_ID',
+                'fields' => [
+                    'firstName' => 'MOCK_FIRST_NAME',
+                    'lastName' => 'MOCK_LAST_NAME',
+                    'id' => 1,
+                    'birthDay' => '1986-10-30',
+                ],
+                'createdTime' => '2021-05-20T20:05:01.000Z',
+            ],
+            'POST'
+        );
+
+        // Given we have an airtable client
+        $airtableClient = new AirtableClient(
+            'MOCK_KEY',
+            'MOCK_ID',
+            $httpClient,
+            $this->normalizer
+        );
+
+        // When we call addOneRecord with a data class
+        $record = $airtableClient->addOneRecord('MOCK_TABLE', ['id' => 'MOCK_ID']);
+        static::assertEquals('MOCK_ID', $record->getId());
+        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $record->getCreatedTime());
+        // Then the result should be an AirtableRecord
+        static::assertInstanceOf(AirtableRecord::class, $record);
+    }
+
     private function createHttpClientMock(
         string $expectedCallUrl,
         array $expectedJsonData = [],
