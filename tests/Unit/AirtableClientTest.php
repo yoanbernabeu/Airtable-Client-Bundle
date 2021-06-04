@@ -7,11 +7,11 @@ namespace Yoanbernabeu\AirtableClientBundle\Tests\Unit;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Yoanbernabeu\AirtableClientBundle\AirtableClient;
 use Yoanbernabeu\AirtableClientBundle\AirtableRecord;
+use Yoanbernabeu\AirtableClientBundle\AirtableTransportInterface;
 use Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy\Customer;
-use Yoanbernabeu\AirtableClientBundle\Tests\Unit\Dummy\DummyResponse;
 
 /**
  * @internal
@@ -29,28 +29,13 @@ class AirtableClientTest extends TestCase
     public function findAllWillReturnAirtableRecords(): void
     {
         // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE',
-            [
-                'records' => [
-                    [
-                        'id' => 'MOCK_ID',
-                        'fields' => [
-                            'firstName' => 'MOCK_FIRST_NAME',
-                            'lastName' => 'MOCK_LAST_NAME',
-                            'id' => 1,
-                            'birthDay' => '1986-10-30',
-                        ],
-                        'createdTime' => '2021-05-20T20:05:01.000Z',
-                    ],
-                ],
-            ]
+        $httpClient = $this->createAirtableTransportMock(
+            'MOCK_TABLE',
+            $this->getRecordPayload()
         );
 
         // Given we have an airtable client
         $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
             $httpClient,
             $this->normalizer
         );
@@ -68,44 +53,25 @@ class AirtableClientTest extends TestCase
 
         $firstRecord = $results[0];
 
-        static::assertEquals('MOCK_ID', $firstRecord->getId());
-        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $firstRecord->getCreatedTime());
+        $this->assertRecordIdandCreatedTime($firstRecord);
 
         /** @var Customer $customer */
         $customer = $firstRecord->getFields();
 
-        static::assertEquals('MOCK_FIRST_NAME', $customer->firstName);
-        static::assertEquals('MOCK_LAST_NAME', $customer->lastName);
-        static::assertEquals(1, $customer->id);
-        static::assertEquals('1986-10-30', $customer->birthDay);
+        $this->assertCustomer($customer);
     }
 
     /** @test */
     public function findAllWillReturnObjectsIfDataClassIsSet(): void
     {
         // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE',
-            [
-                'records' => [
-                    [
-                        'id' => 'MOCK_ID',
-                        'fields' => [
-                            'firstName' => 'MOCK_FIRST_NAME',
-                            'lastName' => 'MOCK_LAST_NAME',
-                            'id' => 1,
-                            'birthDay' => '1986-10-30',
-                        ],
-                        'createdTime' => '2021-05-20T20:05:01.000Z',
-                    ],
-                ],
-            ]
+        $httpClient = $this->createAirtableTransportMock(
+            'MOCK_TABLE',
+            $this->getRecordPayload()
         );
 
         // Given we have an airtable client
         $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
             $httpClient,
             $this->normalizer
         );
@@ -123,47 +89,25 @@ class AirtableClientTest extends TestCase
 
         $firstRecord = $results[0];
 
-        static::assertEquals('MOCK_ID', $firstRecord->getId());
-        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $firstRecord->getCreatedTime());
+        $this->assertRecordIdandCreatedTime($firstRecord);
 
         /** @var Customer $customer */
         $customer = $firstRecord->getFields();
 
-        static::assertEquals('MOCK_FIRST_NAME', $customer->firstName);
-        static::assertEquals('MOCK_LAST_NAME', $customer->lastName);
-        static::assertEquals(1, $customer->id);
-        static::assertEquals('1986-10-30', $customer->birthDay);
+        $this->assertCustomer($customer);
     }
 
     /** @test */
     public function findByWillReturnObjectsIfDataClassIsSet(): void
     {
         // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            "https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE?filterByFormula=AND({MOCK_FIELD} = 'MOCK_VALUE')",
-            [
-                'records' => [
-                    [
-                        'id' => 'MOCK_ID',
-                        'fields' => [
-                            'firstName' => 'MOCK_FIRST_NAME',
-                            'lastName' => 'MOCK_LAST_NAME',
-                            'id' => 1,
-                            'birthDay' => '1986-10-30',
-                        ],
-                        'createdTime' => '2021-05-20T20:05:01.000Z',
-                    ],
-                ],
-            ]
+        $httpClient = $this->createAirtableTransportMock(
+            "MOCK_TABLE?filterByFormula=AND({MOCK_FIELD} = 'MOCK_VALUE')",
+            $this->getRecordPayload()
         );
 
         // Given we have an airtable client
-        $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
-            $httpClient,
-            $this->normalizer
-        );
+        $airtableClient = $this->getAirtableClient($httpClient);
 
         // When we call findBy with a data class
         $results = $airtableClient->findBy('MOCK_TABLE', 'MOCK_FIELD', 'MOCK_VALUE', Customer::class);
@@ -175,24 +119,20 @@ class AirtableClientTest extends TestCase
         // And the fields should be instance of Customer
         static::assertInstanceOf(Customer::class, $firstRecord->getFields());
 
-        static::assertEquals('MOCK_ID', $firstRecord->getId());
-        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $firstRecord->getCreatedTime());
+        $this->assertRecordIdandCreatedTime($firstRecord);
 
         /** @var Customer $customer */
         $customer = $firstRecord->getFields();
 
-        static::assertEquals('MOCK_FIRST_NAME', $customer->firstName);
-        static::assertEquals('MOCK_LAST_NAME', $customer->lastName);
-        static::assertEquals(1, $customer->id);
-        static::assertEquals('1986-10-30', $customer->birthDay);
+        $this->assertCustomer($customer);
     }
 
     /** @test */
     public function findLatestWillReturnNull(): void
     {
         // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE?pageSize=1&sort%5B0%5D%5Bfield%5D=MOCK_FIELD&sort%5B0%5D%5Bdirection%5D=desc',
+        $httpClient = $this->createAirtableTransportMock(
+            'MOCK_TABLE?pageSize=1&sort%5B0%5D%5Bfield%5D=MOCK_FIELD&sort%5B0%5D%5Bdirection%5D=desc',
             [
                 'records' => [
                     [],
@@ -201,12 +141,7 @@ class AirtableClientTest extends TestCase
         );
 
         // Given we have an airtable client
-        $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
-            $httpClient,
-            $this->normalizer
-        );
+        $airtableClient = $this->getAirtableClient($httpClient);
 
         // When we call findTheLatest with a data class
         $results = $airtableClient->findTheLatest('MOCK_TABLE', 'MOCK_FIELD', Customer::class);
@@ -218,31 +153,13 @@ class AirtableClientTest extends TestCase
     public function findLatestWillReturnObjectsIfDataClassIsSet(): void
     {
         // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE?pageSize=1&sort%5B0%5D%5Bfield%5D=MOCK_FIELD&sort%5B0%5D%5Bdirection%5D=desc',
-            [
-                'records' => [
-                    [
-                        'id' => 'MOCK_ID',
-                        'fields' => [
-                            'firstName' => 'MOCK_FIRST_NAME',
-                            'lastName' => 'MOCK_LAST_NAME',
-                            'id' => 1,
-                            'birthDay' => '1986-10-30',
-                        ],
-                        'createdTime' => '2021-05-20T20:05:01.000Z',
-                    ],
-                ],
-            ]
+        $httpClient = $this->createAirtableTransportMock(
+            'MOCK_TABLE?pageSize=1&sort%5B0%5D%5Bfield%5D=MOCK_FIELD&sort%5B0%5D%5Bdirection%5D=desc',
+            $this->getRecordPayload()
         );
 
         // Given we have an airtable client
-        $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
-            $httpClient,
-            $this->normalizer
-        );
+        $airtableClient = $this->getAirtableClient($httpClient);
 
         // When we call findTheLatest with a data class
         $record = $airtableClient->findTheLatest('MOCK_TABLE', 'MOCK_FIELD', Customer::class);
@@ -251,49 +168,30 @@ class AirtableClientTest extends TestCase
         static::assertInstanceOf(AirtableRecord::class, $record);
         // And the fields should be instance of Customer
         static::assertInstanceOf(Customer::class, $record->getFields());
-        static::assertEquals('MOCK_ID', $record->getId());
-        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $record->getCreatedTime());
+        $this->assertRecordIdandCreatedTime($record);
 
         /** @var Customer $customer */
         $customer = $record->getFields();
 
-        static::assertEquals('MOCK_FIRST_NAME', $customer->firstName);
-        static::assertEquals('MOCK_LAST_NAME', $customer->lastName);
-        static::assertEquals(1, $customer->id);
-        static::assertEquals('1986-10-30', $customer->birthDay);
+        $this->assertCustomer($customer);
     }
 
     /** @test */
     public function findOneByIdWillReturnObjectIfDataClassIsSet(): void
     {
         // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE/MOCK_ID',
-            [
-                'id' => 'MOCK_ID',
-                'fields' => [
-                    'firstName' => 'MOCK_FIRST_NAME',
-                    'lastName' => 'MOCK_LAST_NAME',
-                    'id' => 1,
-                    'birthDay' => '1986-10-30',
-                ],
-                'createdTime' => '2021-05-20T20:05:01.000Z',
-            ]
+        $httpClient = $this->createAirtableTransportMock(
+            'MOCK_TABLE/MOCK_ID',
+            $this->getPayload()
         );
 
         // Given we have an airtable client
-        $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
-            $httpClient,
-            $this->normalizer
-        );
+        $airtableClient = $this->getAirtableClient($httpClient);
 
         // When we call findOneById with a data class
         $record = $airtableClient->findOneById('MOCK_TABLE', 'MOCK_ID', Customer::class);
-        static::assertEquals('MOCK_ID', $record->getId());
-        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $record->getCreatedTime());
 
+        $this->assertRecordIdandCreatedTime($record);
         // Then the result should be an AirtableRecord
         static::assertInstanceOf(AirtableRecord::class, $record);
         // And the fields should be instance of Customer
@@ -302,29 +200,21 @@ class AirtableClientTest extends TestCase
         /** @var Customer $customer */
         $customer = $record->getFields();
 
-        static::assertEquals('MOCK_FIRST_NAME', $customer->firstName);
-        static::assertEquals('MOCK_LAST_NAME', $customer->lastName);
-        static::assertEquals(1, $customer->id);
-        static::assertEquals('1986-10-30', $customer->birthDay);
+        $this->assertCustomer($customer);
     }
 
     /** @test */
     public function addOneRecordWillReturnNull()
     {
         // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE',
+        $httpClient = $this->createAirtableTransportMock(
+            'MOCK_TABLE',
             [],
             'POST'
         );
 
         // Given we have an airtable client
-        $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
-            $httpClient,
-            $this->normalizer
-        );
+        $airtableClient = $this->getAirtableClient($httpClient);
 
         // When we call addOneRecord with a data class
         $record = $airtableClient->addOneRecord('MOCK_TABLE', [], Customer::class);
@@ -335,55 +225,85 @@ class AirtableClientTest extends TestCase
     /** @test */
     public function addOneRecordWillReturnObjectIfDataClassIsSet()
     {
-        // Setup the dummy HttpClient
-        $httpClient = $this->createHttpClientMock(
-            'https://api.airtable.com/v0/MOCK_ID/MOCK_TABLE',
-            [
-                'id' => 'MOCK_ID',
-                'fields' => [
-                    'firstName' => 'MOCK_FIRST_NAME',
-                    'lastName' => 'MOCK_LAST_NAME',
-                    'id' => 1,
-                    'birthDay' => '1986-10-30',
-                ],
-                'createdTime' => '2021-05-20T20:05:01.000Z',
-            ],
+        // Setup the dummy AirtableTransport
+        $httpClient = $this->createAirtableTransportMock(
+            'MOCK_TABLE',
+            $this->getPayload(),
             'POST'
         );
 
         // Given we have an airtable client
-        $airtableClient = new AirtableClient(
-            'MOCK_KEY',
-            'MOCK_ID',
-            $httpClient,
-            $this->normalizer
-        );
+        $airtableClient = $this->getAirtableClient($httpClient);
 
         // When we call addOneRecord with a data class
         $record = $airtableClient->addOneRecord('MOCK_TABLE', ['id' => 'MOCK_ID']);
-        static::assertEquals('MOCK_ID', $record->getId());
-        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $record->getCreatedTime());
+        $this->assertRecordIdandCreatedTime($record);
         // Then the result should be an AirtableRecord
         static::assertInstanceOf(AirtableRecord::class, $record);
     }
 
-    private function createHttpClientMock(
+    private function assertCustomer(Customer $customer): void
+    {
+        static::assertEquals('MOCK_FIRST_NAME', $customer->firstName);
+        static::assertEquals('MOCK_LAST_NAME', $customer->lastName);
+        static::assertEquals(1, $customer->id);
+        static::assertEquals('1986-10-30', $customer->birthDay);
+    }
+
+    private function assertRecordIdandCreatedTime(AirtableRecord $record): void
+    {
+        static::assertEquals('MOCK_ID', $record->getId());
+        static::assertEquals(new DateTimeImmutable('2021-05-20T20:05:01.000Z'), $record->getCreatedTime());
+    }
+
+    private function createAirtableTransportMock(
         string $expectedCallUrl,
-        array $expectedJsonData = [],
+        array $expectedData = [],
         string $expectedMethod = 'GET'
-    ): HttpClientInterface {
-        $httpClient = $this->createMock(HttpClientInterface::class);
-        $httpClient
+    ): AirtableTransportInterface {
+        $response = $this->createMock(ResponseInterface::class);
+        $response
+            ->method('toArray')
+            ->willReturn($expectedData)
+        ;
+
+        $airtableTransport = $this->createMock(AirtableTransportInterface::class);
+        $airtableTransport
             ->expects(static::once())
             ->method('request')
             ->with($expectedMethod, $expectedCallUrl)
-            ->willReturn(new DummyResponse(
-                json_encode(
-                    $expectedJsonData
-                )
-            ))
+            ->willReturn($response)
         ;
 
-        return $httpClient;
+        return $airtableTransport;
+    }
+
+    private function getAirtableClient(AirtableTransportInterface $airtableTransport): AirtableClient
+    {
+        return new AirtableClient(
+            $airtableTransport,
+            $this->normalizer
+        );
+    }
+
+    private function getRecordPayload(): array
+    {
+        return [
+            'records' => [$this->getPayload()],
+        ];
+    }
+
+    private function getPayload(): array
+    {
+        return [
+            'id' => 'MOCK_ID',
+            'fields' => [
+                'firstName' => 'MOCK_FIRST_NAME',
+                'lastName' => 'MOCK_LAST_NAME',
+                'id' => 1,
+                'birthDay' => '1986-10-30',
+            ],
+            'createdTime' => '2021-05-20T20:05:01.000Z',
+        ];
     }
 }
