@@ -14,7 +14,7 @@ return static function (ContainerConfigurator $container): void {
     $scopeConfig = [
         'base_uri' => AirtableTransport::BASE_URI,
         'headers' => [
-            'Authorization' => param('yoanbernabeu_airtable_client.airtable_client.key'),
+            'Authorization' => 'Bearer '.param('yoanbernabeu_airtable_client.airtable_client.key'),
             'Accept' => 'application/json',
         ],
     ];
