@@ -28,7 +28,7 @@ class AirtableTransportTest extends KernelTestCase
         $configuredOptions = $response->getRequestOptions();
 
         static::assertEquals([
-            'Authorization: dummy key',
+            'Authorization: Bearer dummy key',
             'Accept: application/json',
         ], $configuredOptions['headers'], 'Inspect headers is well configured');
 
