@@ -53,7 +53,7 @@ final class AirtableClient implements AirtableClientInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneById(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
+    public function find(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf('%s/%s', $table, $id);
         $response = $this->airtableTransport->request('GET', $url);
@@ -68,7 +68,7 @@ final class AirtableClient implements AirtableClientInterface
     /**
      * {@inheritdoc}
      */
-    public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord
+    public function findLast(string $table, $field, ?string $dataClass = null): ?AirtableRecord
     {
         $params = [
             'pageSize' => 1,
@@ -100,7 +100,7 @@ final class AirtableClient implements AirtableClientInterface
     /**
      * {@inheritdoc}
      */
-    public function addOneRecord(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord
+    public function add(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf(
             '%s',

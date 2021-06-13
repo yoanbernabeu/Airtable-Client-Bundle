@@ -143,8 +143,8 @@ class AirtableClientTest extends TestCase
         // Given we have an airtable client
         $airtableClient = $this->getAirtableClient($httpClient);
 
-        // When we call findTheLatest with a data class
-        $results = $airtableClient->findTheLatest('MOCK_TABLE', 'MOCK_FIELD', Customer::class);
+        // When we call findLast with a data class
+        $results = $airtableClient->findLast('MOCK_TABLE', 'MOCK_FIELD', Customer::class);
 
         static::assertNull($results);
     }
@@ -161,8 +161,8 @@ class AirtableClientTest extends TestCase
         // Given we have an airtable client
         $airtableClient = $this->getAirtableClient($httpClient);
 
-        // When we call findTheLatest with a data class
-        $record = $airtableClient->findTheLatest('MOCK_TABLE', 'MOCK_FIELD', Customer::class);
+        // When we call findLast with a data class
+        $record = $airtableClient->findLast('MOCK_TABLE', 'MOCK_FIELD', Customer::class);
 
         // Then the result should be a single AirtableRecord
         static::assertInstanceOf(AirtableRecord::class, $record);
@@ -177,7 +177,7 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
-    public function findOneByIdWillReturnObjectIfDataClassIsSet(): void
+    public function findWillReturnObjectIfDataClassIsSet(): void
     {
         // Setup the dummy HttpClient
         $httpClient = $this->createAirtableTransportMock(
@@ -188,8 +188,8 @@ class AirtableClientTest extends TestCase
         // Given we have an airtable client
         $airtableClient = $this->getAirtableClient($httpClient);
 
-        // When we call findOneById with a data class
-        $record = $airtableClient->findOneById('MOCK_TABLE', 'MOCK_ID', Customer::class);
+        // When we call find with a data class
+        $record = $airtableClient->find('MOCK_TABLE', 'MOCK_ID', Customer::class);
 
         $this->assertRecordIdandCreatedTime($record);
         // Then the result should be an AirtableRecord
@@ -204,7 +204,7 @@ class AirtableClientTest extends TestCase
     }
 
     /** @test */
-    public function addOneRecordWillReturnNull()
+    public function addWillReturnNull()
     {
         // Setup the dummy HttpClient
         $httpClient = $this->createAirtableTransportMock(
@@ -216,14 +216,14 @@ class AirtableClientTest extends TestCase
         // Given we have an airtable client
         $airtableClient = $this->getAirtableClient($httpClient);
 
-        // When we call addOneRecord with a data class
-        $record = $airtableClient->addOneRecord('MOCK_TABLE', [], Customer::class);
+        // When we call add with a data class
+        $record = $airtableClient->add('MOCK_TABLE', [], Customer::class);
 
         static::assertNull($record);
     }
 
     /** @test */
-    public function addOneRecordWillReturnObjectIfDataClassIsSet()
+    public function addWillReturnObjectIfDataClassIsSet()
     {
         // Setup the dummy AirtableTransport
         $httpClient = $this->createAirtableTransportMock(
@@ -235,8 +235,8 @@ class AirtableClientTest extends TestCase
         // Given we have an airtable client
         $airtableClient = $this->getAirtableClient($httpClient);
 
-        // When we call addOneRecord with a data class
-        $record = $airtableClient->addOneRecord('MOCK_TABLE', ['id' => 'MOCK_ID']);
+        // When we call add with a data class
+        $record = $airtableClient->add('MOCK_TABLE', ['id' => 'MOCK_ID']);
         $this->assertRecordIdandCreatedTime($record);
         // Then the result should be an AirtableRecord
         static::assertInstanceOf(AirtableRecord::class, $record);
