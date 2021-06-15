@@ -103,7 +103,7 @@ class FooController
 {
     public function bar(AirtableClientInterface $airtableClient)
     {
-        $airtableClient->addOneRecord(
+        $airtableClient->add(
             'tableName',
             [
                 'id' => 1,
@@ -137,7 +137,7 @@ class FooController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $airtableClient->addOneRecord('test', $data);
+            $airtableClient->add('test', $data);
         }
         return $this->render('bar.html.twig', [
             'form' => $form->createView()
