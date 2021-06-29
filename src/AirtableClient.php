@@ -128,18 +128,14 @@ final class AirtableClient implements AirtableClientInterface
 
     public function createForm(array $fields): FormInterface
     {
-        $formFactory = Forms::createFormFactoryBuilder()
+        $form = Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->getFormFactory()
+            ->createBuilder()
         ;
 
-        $form = $formFactory->createBuilder();
-
-        $i = 0;
-
-        foreach ($fields as $field) {
-            $form->add(array_keys($fields)[$i], $field);
-            ++$i;
+        foreach ($fields as $fieldName => $fieldType) {
+            $form->add($fieldName, $fieldType);
         }
 
         return $form->getForm();
