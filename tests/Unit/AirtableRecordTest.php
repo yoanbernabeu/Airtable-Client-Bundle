@@ -17,32 +17,29 @@ class AirtableRecordTest extends TestCase
      * @test
      * @dataProvider invalidRecordArrayProvider
      */
-    public function createFromRecordWillThrowIfADataIsMissingInArray(array $recordData)
+    public function createFromRecordWillThrowIfADataIsMissingInArray(array $recordData, string $message)
     {
         $this->expectException(MissingRecordDataException::class);
+        $this->expectErrorMessage($message);
 
         AirtableRecord::createFromRecord($recordData);
     }
 
     public function invalidRecordArrayProvider()
     {
-        yield [[
+        yield 'Missing fields' => [[
             'id' => 'MOCK_ID',
             'createdTime' => '2021-01-01',
-        ]];
-        yield [[
+        ], 'Wrong payload given, missing "fields"'];
+        yield 'Missing Id' => [[
             'fields' => [],
             'createdTime' => '2021-01-01',
-        ]];
-        yield [[
-            'id' => 'MOCK_ID',
-            'createdTime' => '2021-01-01',
-        ]];
-        yield [[
+        ], 'Wrong payload given, missing "id"'];
+        yield 'Invalid Datetime' => [[
             'id' => 'MOCK_ID',
             'fields' => [],
             'createdTime' => 'not a valid datetime',
-        ]];
-        yield [[]];
+        ], 'Value passed in the "createdTime" value "not a valid datetime" is not a valid DateTime'];
+        yield 'Empty payload' => [[], 'Wrong payload given, missing "id, fields, createdTime"'];
     }
 }

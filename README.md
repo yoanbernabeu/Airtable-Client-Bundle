@@ -62,14 +62,23 @@ class FooController
         
         $airtableClient->findBy('tableName', 'fieldName', 'value', Foo::class);      
           
-        $record = $airtableClient->findOneById('tableName', 'id');
+        $record = $airtableClient->find('tableName', 'id');
         
         /** @var Foo $foo */
         $foo = $record->getFields();
             
         echo $foo->bar;
         
-        $airtableClient->findTheLatest('tableName', 'fieldName');
+        $airtableClient->findLast('tableName', 'fieldName');
+
+        $airtableClient->add(
+            'tableName',
+            [
+                'id' => 1,
+                'bar' => 'lorem ipsum',
+                ClassTest::class
+            ]
+        );
     }
 
     // ...

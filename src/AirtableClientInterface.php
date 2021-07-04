@@ -36,7 +36,7 @@ interface AirtableClientInterface
      * @param string      $id        Id
      * @param string|null $dataClass The name of the class which will hold fields data
      */
-    public function findOneById(string $table, string $id, ?string $dataClass = null): ?AirtableRecord;
+    public function find(string $table, string $id, ?string $dataClass = null): ?AirtableRecord;
 
     /**
      * Field allowing filtering.
@@ -45,5 +45,14 @@ interface AirtableClientInterface
      * @param mixed       $field
      * @param string|null $dataClass The name of the class which will hold fields data
      */
-    public function findTheLatest(string $table, $field, ?string $dataClass = null): ?AirtableRecord;
+    public function findLast(string $table, $field, ?string $dataClass = null): ?AirtableRecord;
+
+    /**
+     * Create new record and return the new record of a table.
+     *
+     * @param string      $table     Table name
+     * @param array       $fields    Table fields
+     * @param string|null $dataClass The name of the class which will hold fields data
+     */
+    public function add(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord;
 }

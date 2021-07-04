@@ -17,7 +17,7 @@ return (new PhpCsFixer\Config)
         '@DoctrineAnnotation' => true,
         '@PHP74Migration' => true,
         'strict_param' => true,
-        'strict_comparison' => true,
+        'strict_comparison' => false,
         'array_syntax' => ['syntax' => 'short'],
         'array_indentation' => true,
         'ordered_imports' => true,
