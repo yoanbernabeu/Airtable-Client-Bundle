@@ -128,10 +128,6 @@ final class AirtableClient implements AirtableClientInterface
 
     public function createForm(array $fields): FormInterface
     {
-        if (!class_exists(Forms::class)) {
-            throw new \Exception('The AirtableClient::createForm method needs the Symfony Form Component to be installed, please add it with Composer : composer req form');
-        }
-
         $form = Forms::createFormFactoryBuilder()
             ->addExtension(new HttpFoundationExtension())
             ->getFormFactory()
