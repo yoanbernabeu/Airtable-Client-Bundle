@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Yoanbernabeu\AirtableClientBundle;
 
+use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Forms;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 final class AirtableClient implements AirtableClientInterface
@@ -121,6 +124,21 @@ final class AirtableClient implements AirtableClientInterface
         $recordData = $this->createRecordFromResponse($dataClass, $recordData);
 
         return AirtableRecord::createFromRecord($recordData);
+    }
+
+    public function createForm(array $fields): FormInterface
+    {
+        $form = Forms::createFormFactoryBuilder()
+            ->addExtension(new HttpFoundationExtension())
+            ->getFormFactory()
+            ->createBuilder()
+        ;
+
+        foreach ($fields as $fieldName => $fieldType) {
+            $form->add($fieldName, $fieldType);
+        }
+
+        return $form->getForm();
     }
 
     /**

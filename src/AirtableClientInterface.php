@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Yoanbernabeu\AirtableClientBundle;
 
+use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormInterface;
+
 interface AirtableClientInterface
 {
     /**
@@ -55,4 +58,11 @@ interface AirtableClientInterface
      * @param string|null $dataClass The name of the class which will hold fields data
      */
     public function add(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord;
+
+    /**
+     * Create form from an array of fields.
+     *
+     * @param array $fields Fields of Form
+     */
+    public function createForm(array $fields): FormInterface;
 }

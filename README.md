@@ -37,6 +37,8 @@ To find your **Airtable API key**, go to your **Account options** and search in 
 
 ## Usage
 
+### Find
+
 ```php
 
 use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
@@ -76,9 +78,70 @@ class FooController
             [
                 'id' => 1,
                 'bar' => 'lorem ipsum',
-                ClassTest::class
+                Foo::class
             ]
         );
+    }
+
+    // ...
+}
+```
+
+### Add
+
+```php
+
+use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
+
+class Foo
+{
+    public int $id;
+    public string $bar;
+}
+
+class FooController
+{
+    public function bar(AirtableClientInterface $airtableClient)
+    {
+        $airtableClient->add(
+            'tableName',
+            [
+                'id' => 1,
+                'bar' => 'lorem ipsum',
+                Foo::class
+            ]
+        );
+    }
+
+    // ...
+}
+```
+
+### Create Form
+
+```php
+
+use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
+use Symfony\Component\HttpFoundation\Request;
+
+class FooController
+{
+    public function bar(AirtableClientInterface $airtableClient, Request $request)
+    {
+        $form = $airtableClient->createForm([
+            'Name' => TextType::class,
+            'text' => TextType::class,
+            'Submit' => SubmitType::class
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $airtableClient->add('test', $data);
+        }
+        return $this->render('bar.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 
     // ...
