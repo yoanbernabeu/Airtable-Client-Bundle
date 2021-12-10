@@ -33,9 +33,27 @@ final class AirtableClient implements AirtableClientInterface
             null !== $view ? '?view='.$view : ''
         );
 
-        $response = $this->airtableTransport->request('GET', $url);
+        $response = $this->pagination($url, $this->airtableTransport->request('GET', $url)->toArray());
 
-        return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
+        return $this->mapRecordsToAirtableRecords($response['records'], $dataClass);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function pagination(string $url, array $response): array
+    {
+        if ($response['offset'] ?? null) {
+            $param = mb_stristr($url, '?view') ? '&' : '?';
+
+            $offsetUrl = $url.$param.'offset='.$response['offset'];
+            $offsetResponse = $this->airtableTransport->request('GET', $offsetUrl)->toArray();
+            $response = array_merge($response['records'], $offsetResponse['records']);
+
+            return $this->pagination($url, ['records' => $response, 'offset' => $offsetResponse['offset'] ?? null]);
+        }
+
+        return $response;
     }
 
     /**

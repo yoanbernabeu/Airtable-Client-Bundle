@@ -21,6 +21,14 @@ interface AirtableClientInterface
     public function findAll(string $table, ?string $view = null, ?string $dataClass = null): array;
 
     /**
+     * Returns a set of rows from AirTable.
+     *
+     * @param string $url      Url to get data
+     * @param array  $response Array response from Airtable
+     */
+    public function pagination(string $url, array $response): array;
+
+    /**
      * Allows you to filter on a field in the table.
      *
      * @param string      $table     Table name
