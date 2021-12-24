@@ -151,7 +151,7 @@ final class AirtableClient implements AirtableClientInterface
     {
         $response = $this->airtableTransport->requestMeta('GET', 'tables');
 
-        return $response->toArray();
+        return $response->toArray()['tables'] ?? null;
     }
 
     /**
