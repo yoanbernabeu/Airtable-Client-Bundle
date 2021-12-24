@@ -27,4 +27,14 @@ final class AirtableTransport extends ScopingHttpClient implements AirtableTrans
 
         return parent::request($method, $url, $options);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function requestMeta(string $method, string $url, array $options = []): ResponseInterface
+    {
+        $url = sprintf('%s/meta/bases/%s/%s', self::VERSION, $this->id, $url);
+
+        return parent::request($method, $url, $options);
+    }
 }
