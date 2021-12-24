@@ -159,8 +159,7 @@ final class AirtableClient implements AirtableClientInterface
      */
     public function getTableMetadata(string $table): ?array
     {
-        $tables = $this->getTablesMetadata()['tables'] ?? [];
-
+        $tables = $this->getTablesMetadata() ?? [];
         foreach ($tables as $value) {
             if ($value['name'] === $table) {
                 return $value;
