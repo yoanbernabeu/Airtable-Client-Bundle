@@ -11,11 +11,6 @@ interface AirtableTransportInterface extends HttpClientInterface
 {
     /**
      * Requests an HTTP resource to AirTable Metadata API.
-     *
-     * @param  string $method
-     * @param  string $url
-     * @param  array $options
-     * @return ResponseInterface
      */
     public function requestMeta(string $method, string $url, array $options = []): ResponseInterface;
 }
