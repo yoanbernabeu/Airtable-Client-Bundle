@@ -73,4 +73,14 @@ interface AirtableClientInterface
      * @param array $fields Fields of Form
      */
     public function createForm(array $fields): FormInterface;
+
+    /**
+     * Returns the schema of the tables in the specified base in Array.
+     */
+    public function getTablesMetadata(): ?array;
+
+    /**
+     * Returns the schema of one table (by name) in the specified base in Array.
+     */
+    public function getTableMetadata(string $table): ?array;
 }

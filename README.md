@@ -148,6 +148,28 @@ class FooController
 }
 ```
 
+### Metadata
+
+Easy access to Airtable's Metadata via its [Metadata API](https://airtable.com/api/meta)
+
+```php
+
+use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
+
+class FooController
+{
+    public function bar(AirtableClientInterface $airtableClient)
+    {
+        // Get Metadata for All Tables
+        $tablesMeta = $airtableClient->getTablesMetadata();
+
+        // Get Metadata for One Table
+        $tableMeta = $airtableClient->getTableMetadata('TableName');
+
+    // ...
+}
+```
+
 ## License
 
 See the bundled [LICENSE](https://github.com/yoanbernabeu/Airtable-Client-Bundle/blob/main/LICENCE) file.

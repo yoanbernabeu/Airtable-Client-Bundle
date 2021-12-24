@@ -144,6 +144,31 @@ final class AirtableClient implements AirtableClientInterface
         return AirtableRecord::createFromRecord($recordData);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getTablesMetadata(): ?array
+    {
+        $response = $this->airtableTransport->requestMeta('GET', 'tables');
+
+        return $response->toArray()['tables'] ?? null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTableMetadata(string $table): ?array
+    {
+        $tables = $this->getTablesMetadata() ?? [];
+        foreach ($tables as $value) {
+            if ($value['name'] === $table) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
     public function createForm(array $fields): FormInterface
     {
         $form = Forms::createFormFactoryBuilder()
