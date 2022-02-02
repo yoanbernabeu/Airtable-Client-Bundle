@@ -12,12 +12,12 @@ class AirtableClientBundle extends Bundle
     /**
      * Overridden to allow for the custom extension alias.
      */
-    public function getContainerExtension()
+    public function getContainerExtension(): ?AirtableClientExtension
     {
         if (null === $this->extension) {
             $this->extension = new AirtableClientExtension();
         }
 
-        return $this->extension;
+        return $this->extension ?: null;
     }
 }
