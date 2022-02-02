@@ -7,6 +7,11 @@ parameters:
             message: '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::children\(\)#'
             count: 1
             path: src/DependencyInjection/Configuration.php
+        -
+            message: '#Short ternary operator is not allowed. Use null coalesce operator if applicable or consider using long ternary#'
+            count: 1
+            path: src/AirtableClientBundle.php
+
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
 includes:
