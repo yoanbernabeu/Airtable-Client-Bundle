@@ -7,19 +7,19 @@ namespace Yoanbernabeu\AirtableClientBundle;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 final class AirtableClient implements AirtableClientInterface
 {
     private AirtableTransportInterface $airtableTransport;
-    private ObjectNormalizer $normalizer;
+    private NormalizerInterface $normalizer;
 
     public function __construct(
         AirtableTransportInterface $airtableTransport,
-        ObjectNormalizer $objectNormalizer
+        NormalizerInterface $normalizer
     ) {
         $this->airtableTransport = $airtableTransport;
-        $this->normalizer = $objectNormalizer;
+        $this->normalizer = $normalizer;
     }
 
     /**
