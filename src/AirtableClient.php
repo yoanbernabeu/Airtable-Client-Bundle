@@ -7,19 +7,19 @@ namespace Yoanbernabeu\AirtableClientBundle;
 use Symfony\Component\Form\Extension\HttpFoundation\HttpFoundationExtension;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Forms;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizableInterface;
 
 final class AirtableClient implements AirtableClientInterface
 {
     private AirtableTransportInterface $airtableTransport;
-    private NormalizerInterface $normalizer;
+    private DenormalizableInterface $denormalizable;
 
     public function __construct(
         AirtableTransportInterface $airtableTransport,
-        NormalizerInterface $normalizer
+        DenormalizableInterface $denormalizable,
     ) {
         $this->airtableTransport = $airtableTransport;
-        $this->normalizer = $normalizer;
+        $this->denormalizable = $denormalizable;
     }
 
     /**
@@ -205,7 +205,7 @@ final class AirtableClient implements AirtableClientInterface
     private function createRecordFromResponse(?string $dataClass, array $recordData)
     {
         if (null !== $dataClass) {
-            $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
+            $recordData['fields'] = $this->denormalizable->denormalize($recordData['fields'], $dataClass);
 
             return $recordData;
         }
