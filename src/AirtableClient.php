@@ -211,7 +211,7 @@ final class AirtableClient implements AirtableClientInterface
      *
      * @return array An AirtableRecord object
      */
-    private function createRecordFromResponse(?string $dataClass = null, array $recordData)
+    private function createRecordFromResponse(?string $dataClass, array $recordData)
     {
         if (null !== $dataClass) {
             $recordData['fields'] = $this->normalizer->denormalize($recordData['fields'], $dataClass);
