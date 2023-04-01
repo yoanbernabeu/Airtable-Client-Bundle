@@ -1,4 +1,4 @@
-Airtable Client Bundle (Work In Progress)
+Airtable Client Bundle
 ==================
 
 [![Static code analysis](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/code_analysis.yml/badge.svg)](https://github.com/yoanbernabeu/Airtable-Client-Bundle/actions/workflows/code_analysis.yml)
@@ -105,6 +105,36 @@ class FooController
     {
         $airtableClient->add(
             'tableName',
+            [
+                'id' => 1,
+                'bar' => 'lorem ipsum',
+                Foo::class
+            ]
+        );
+    }
+
+    // ...
+}
+```
+### Edit
+
+```php
+
+use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
+
+class Foo
+{
+    public int $id;
+    public string $bar;
+}
+
+class FooController
+{
+    public function bar(AirtableClientInterface $airtableClient)
+    {
+        $airtableClient->update(
+            'tableName',
+            'recordId',
             [
                 'id' => 1,
                 'bar' => 'lorem ipsum',

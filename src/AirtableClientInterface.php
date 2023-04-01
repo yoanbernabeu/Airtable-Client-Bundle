@@ -68,6 +68,15 @@ interface AirtableClientInterface
     public function add(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord;
 
     /**
+     * Create new record and return the new record of a table.
+     *
+     * @param string      $table     Table name
+     * @param array       $fields    Table fields
+     * @param string|null $dataClass The name of the class which will hold fields data
+     */
+    public function update(string $table, string $recordId, array $fields, ?string $dataClass = null): ?AirtableRecord;
+
+    /**
      * Create form from an array of fields.
      *
      * @param array $fields Fields of Form

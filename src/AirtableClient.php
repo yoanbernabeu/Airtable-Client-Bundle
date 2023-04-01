@@ -147,6 +147,32 @@ final class AirtableClient implements AirtableClientInterface
     /**
      * {@inheritdoc}
      */
+    public function update(string $table, string $recordId, array $fields, ?string $dataClass = null): ?AirtableRecord
+    {
+        $url = sprintf('%s/%s', $table, $recordId);
+
+        $response = $this->airtableTransport->request(
+            'PATCH',
+            $url,
+            ['json' => [
+                'fields' => $fields, ],
+            ]
+        );
+
+        $recordData = $response->toArray();
+
+        if ([] === $recordData) {
+            return null;
+        }
+
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
+
+        return AirtableRecord::createFromRecord($recordData);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getTablesMetadata(): ?array
     {
         $response = $this->airtableTransport->requestMeta('GET', 'tables');
