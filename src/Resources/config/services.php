@@ -3,8 +3,10 @@
 declare(strict_types=1);
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+
 use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
+
 use Yoanbernabeu\AirtableClientBundle\AirtableClient;
 use Yoanbernabeu\AirtableClientBundle\AirtableClientInterface;
 use Yoanbernabeu\AirtableClientBundle\AirtableTransport;

@@ -15,6 +15,7 @@ class AirtableRecordTest extends TestCase
 {
     /**
      * @test
+     *
      * @dataProvider invalidRecordArrayProvider
      */
     public function createFromRecordWillThrowIfADataIsMissingInArray(array $recordData, string $message)

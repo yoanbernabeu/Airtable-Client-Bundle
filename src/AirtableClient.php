@@ -120,28 +120,19 @@ final class AirtableClient implements AirtableClientInterface
      */
     public function add(string $table, array $fields, ?string $dataClass = null): ?AirtableRecord
     {
-        $url = sprintf(
-            '%s',
-            $table
-        );
+        $url = sprintf('%s', $table);
 
-        $response = $this->airtableTransport->request(
-            'POST',
-            $url,
-            ['json' => [
-                'fields' => $fields, ],
-            ]
-        );
+        return $this->createOrUpdateRecord('POST', $url, $fields, $dataClass);
+    }
 
-        $recordData = $response->toArray();
+    /**
+     * {@inheritdoc}
+     */
+    public function update(string $table, string $recordId, array $fields, ?string $dataClass = null): ?AirtableRecord
+    {
+        $url = sprintf('%s/%s', $table, $recordId);
 
-        if ([] === $recordData) {
-            return null;
-        }
-
-        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
-
-        return AirtableRecord::createFromRecord($recordData);
+        return $this->createOrUpdateRecord('PATCH', $url, $fields, $dataClass);
     }
 
     /**
@@ -220,5 +211,34 @@ final class AirtableClient implements AirtableClientInterface
         }
 
         return $recordData;
+    }
+
+    /**
+     * @throws Exception\MissingRecordDataException
+     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
+     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     */
+    private function createOrUpdateRecord(string $method, string $url, array $fields, ?string $dataClass): ?AirtableRecord
+    {
+        $response = $this->airtableTransport->request(
+            $method,
+            $url,
+            [
+                'json' => ['fields' => $fields],
+            ]
+        );
+
+        $recordData = $response->toArray();
+
+        if ([] === $recordData) {
+            return null;
+        }
+
+        $recordData = $this->createRecordFromResponse($dataClass, $recordData);
+
+        return AirtableRecord::createFromRecord($recordData);
     }
 }
