@@ -71,6 +71,18 @@ final class AirtableClient implements AirtableClientInterface
     /**
      * {@inheritdoc}
      */
+    public function findByDateField(string $table, string $field, string $value, ?string $dataClass = null): array
+    {
+        $filterByFormula = sprintf("?filterByFormula=AND(DATESTR({%s} = '%s')", $field, $value);
+        $url = sprintf('%s%s', $table, $filterByFormula);
+        $response = $this->airtableTransport->request('GET', $url);
+
+        return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function find(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf('%s/%s', $table, $id);
