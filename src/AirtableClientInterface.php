@@ -41,6 +41,18 @@ interface AirtableClientInterface
     public function findBy(string $table, string $field, string $value, ?string $dataClass = null): array;
 
     /**
+     * Allows you to filter on a date field in the table.
+     *
+     * @param string      $table     Table name
+     * @param string      $field     Search date field name
+     * @param string      $value     Wanted value
+     * @param string|null $dataClass The class name which will hold fields data
+     *
+     * @return array<array-key, AirtableRecord>
+     */
+    public function findByDateField(string $table, string $field, string $value, ?string $dataClass = null): array;
+
+    /**
      * Returns one record of a table by its ID.
      *
      * @param string      $table     Table Name
