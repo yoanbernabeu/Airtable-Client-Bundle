@@ -212,7 +212,19 @@ final class AirtableClient implements AirtableClientInterface
         array $options = null
     ): array {
         $url = sprintf('tables/%s/fields', $table);
-        $response = $this->airtableTransport->requestMeta('POST', $url);
+        $json = [
+            'name' => $name,
+        ];
+        if (!is_null($type)) {
+            $json['type'] = $type;
+        }
+        if (!is_null($description)) {
+            $json['description'] = $description;
+        }
+        if (!is_null($options)) {
+            $json['options'] = $options;
+        }
+        $response = $this->airtableTransport->requestMeta('POST', $url, ['json' => $json]);
 
         return $response->toArray();
     }
