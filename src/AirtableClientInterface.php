@@ -96,12 +96,33 @@ interface AirtableClientInterface
      * @param string $name The name for the table.
      * @param string|null $description The description for the table (optional).
      * @param mixed[] $fields array of Field Configs https://airtable.com/developers/web/api/field-model
+     *
      * @return mixed[] Table model https://airtable.com/developers/web/api/model/table-model
      */
     public function createTable(
         string $name,
         array $fields = null,
         string $description = null,
+    ): array;
+
+    /**
+     * Create a new field in a table.
+     * https://airtable.com/developers/web/api/create-field
+     *
+     * @param string $table
+     * @param string $name
+     * @param string|null $type https://airtable.com/developers/web/api/model/field-type
+     * @param string|null $description
+     * @param mixed[]|null $options https://airtable.com/developers/web/api/field-model
+     *
+     * @return mixed[] Field model with name https://airtable.com/developers/web/api/field-model
+     */
+    public function createField(
+        string $table,
+        string $name,
+        string $type = null,
+        string $description = null,
+        array $options = null
     ): array;
 
     /**

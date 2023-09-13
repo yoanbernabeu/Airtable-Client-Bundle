@@ -192,6 +192,31 @@ final class AirtableClient implements AirtableClientInterface
         return $response->toArray();
     }
 
+    /**
+     * Create a new field in a table.
+     * https://airtable.com/developers/web/api/create-field
+     *
+     * @param string $table
+     * @param string $name
+     * @param string|null $type https://airtable.com/developers/web/api/model/field-type
+     * @param string|null $description
+     * @param mixed[]|null $options https://airtable.com/developers/web/api/field-model
+     *
+     * @return mixed[] Field model with name https://airtable.com/developers/web/api/field-model
+     */
+    public function createField(
+        string $table,
+        string $name,
+        string $type = null,
+        string $description = null,
+        array $options = null
+    ): array {
+        $url = sprintf('tables/%s/fields', $table);
+        $response = $this->airtableTransport->requestMeta('POST', $url);
+
+        return $response->toArray();
+    }
+
     public function createForm(array $fields): FormInterface
     {
         $form = Forms::createFormFactoryBuilder()
