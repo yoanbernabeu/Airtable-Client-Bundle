@@ -90,6 +90,21 @@ interface AirtableClientInterface
     public function update(string $table, string $recordId, array $fields, ?string $dataClass = null): ?AirtableRecord;
 
     /**
+     * Create a new table.
+     * https://airtable.com/developers/web/api/create-table
+     *
+     * @param string $name The name for the table.
+     * @param string|null $description The description for the table (optional).
+     * @param mixed[] $fields array of Field Configs https://airtable.com/developers/web/api/field-model
+     * @return mixed[] Table model https://airtable.com/developers/web/api/model/table-model
+     */
+    public function createTable(
+        string $name,
+        array $fields = null,
+        string $description = null,
+    ): array;
+
+    /**
      * Create form from an array of fields.
      *
      * @param array $fields Fields of Form

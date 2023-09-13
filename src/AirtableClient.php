@@ -172,6 +172,26 @@ final class AirtableClient implements AirtableClientInterface
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function createTable(
+        string $name,
+        array $fields = null,
+        string $description = null,
+    ): array {
+        $json = [
+            'name' => $name,
+            'fields' => $fields,
+        ];
+        if (!is_null($description)) {
+            $json['description'] = $description;
+        }
+        $response = $this->airtableTransport->requestMeta('POST', 'tables', ['json' => $json]);
+
+        return $response->toArray();
+    }
+
     public function createForm(array $fields): FormInterface
     {
         $form = Forms::createFormFactoryBuilder()
