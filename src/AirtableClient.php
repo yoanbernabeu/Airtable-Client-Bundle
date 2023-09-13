@@ -71,6 +71,18 @@ final class AirtableClient implements AirtableClientInterface
     /**
      * {@inheritdoc}
      */
+    public function findByDateField(string $table, string $field, string $value, ?string $dataClass = null): array
+    {
+        $filterByFormula = sprintf("?filterByFormula=AND(DATESTR({%s}) = '%s')", $field, $value);
+        $url = sprintf('%s%s', $table, $filterByFormula);
+        $response = $this->airtableTransport->request('GET', $url);
+
+        return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function find(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf('%s/%s', $table, $id);
@@ -158,6 +170,26 @@ final class AirtableClient implements AirtableClientInterface
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createTable(
+        string $name,
+        array $fields = null,
+        string $description = null,
+    ): array {
+        $json = [
+            'name' => $name,
+            'fields' => $fields,
+        ];
+        if (!is_null($description)) {
+            $json['description'] = $description;
+        }
+        $response = $this->airtableTransport->requestMeta('POST', 'tables', ['json' => $json]);
+
+        return $response->toArray();
     }
 
     public function createForm(array $fields): FormInterface

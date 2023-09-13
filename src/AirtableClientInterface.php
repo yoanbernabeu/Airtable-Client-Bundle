@@ -41,6 +41,18 @@ interface AirtableClientInterface
     public function findBy(string $table, string $field, string $value, ?string $dataClass = null): array;
 
     /**
+     * Allows you to filter on a date field in the table.
+     *
+     * @param string      $table     Table name
+     * @param string      $field     Search date field name
+     * @param string      $value     Wanted value
+     * @param string|null $dataClass The class name which will hold fields data
+     *
+     * @return array<array-key, AirtableRecord>
+     */
+    public function findByDateField(string $table, string $field, string $value, ?string $dataClass = null): array;
+
+    /**
      * Returns one record of a table by its ID.
      *
      * @param string      $table     Table Name
@@ -76,6 +88,21 @@ interface AirtableClientInterface
      * @param string|null $dataClass The name of the class which will hold fields data
      */
     public function update(string $table, string $recordId, array $fields, ?string $dataClass = null): ?AirtableRecord;
+
+    /**
+     * Create a new table.
+     * https://airtable.com/developers/web/api/create-table
+     *
+     * @param string $name The name for the table.
+     * @param string|null $description The description for the table (optional).
+     * @param mixed[] $fields array of Field Configs https://airtable.com/developers/web/api/field-model
+     * @return mixed[] Table model https://airtable.com/developers/web/api/model/table-model
+     */
+    public function createTable(
+        string $name,
+        array $fields = null,
+        string $description = null,
+    ): array;
 
     /**
      * Create form from an array of fields.
