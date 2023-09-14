@@ -71,6 +71,18 @@ final class AirtableClient implements AirtableClientInterface
     /**
      * {@inheritdoc}
      */
+    public function findByDateField(string $table, string $field, string $value, ?string $dataClass = null): array
+    {
+        $filterByFormula = sprintf("?filterByFormula=AND(DATESTR({%s}) = '%s')", $field, $value);
+        $url = sprintf('%s%s', $table, $filterByFormula);
+        $response = $this->airtableTransport->request('GET', $url);
+
+        return $this->mapRecordsToAirtableRecords($response->toArray()['records'], $dataClass);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function find(string $table, string $id, ?string $dataClass = null): ?AirtableRecord
     {
         $url = sprintf('%s/%s', $table, $id);
@@ -158,6 +170,63 @@ final class AirtableClient implements AirtableClientInterface
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createTable(
+        string $name,
+        array $fields = null,
+        string $description = null,
+    ): array {
+        $json = [
+            'name' => $name,
+            'fields' => $fields,
+        ];
+        if (!is_null($description)) {
+            $json['description'] = $description;
+        }
+        $response = $this->airtableTransport->requestMeta('POST', 'tables', ['json' => $json]);
+
+        return $response->toArray();
+    }
+
+    /**
+     * Create a new field in a table.
+     * https://airtable.com/developers/web/api/create-field
+     *
+     * @param string $table
+     * @param string $name
+     * @param string|null $type https://airtable.com/developers/web/api/model/field-type
+     * @param string|null $description
+     * @param mixed[]|null $options https://airtable.com/developers/web/api/field-model
+     *
+     * @return mixed[] Field model with name https://airtable.com/developers/web/api/field-model
+     */
+    public function createField(
+        string $table,
+        string $name,
+        string $type = null,
+        string $description = null,
+        array $options = null
+    ): array {
+        $url = sprintf('tables/%s/fields', $table);
+        $json = [
+            'name' => $name,
+        ];
+        if (!is_null($type)) {
+            $json['type'] = $type;
+        }
+        if (!is_null($description)) {
+            $json['description'] = $description;
+        }
+        if (!is_null($options)) {
+            $json['options'] = $options;
+        }
+        $response = $this->airtableTransport->requestMeta('POST', $url, ['json' => $json]);
+
+        return $response->toArray();
     }
 
     public function createForm(array $fields): FormInterface
